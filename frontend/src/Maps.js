@@ -1,4 +1,5 @@
 import React from 'react';
+import "leaflet/dist/leaflet.css"
 const position = [51.505, -0.09]
 
 export default function Maps() {

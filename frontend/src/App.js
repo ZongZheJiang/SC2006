@@ -19,6 +19,9 @@ function App() {
           Learn React
         </a>
       </header>
+      <div className="Maps">
+        <Maps />
+      </div>
     </div>
   );
 }
