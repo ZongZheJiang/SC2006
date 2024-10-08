@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import "leaflet/dist/leaflet.css"
 import L from "leaflet";
@@ -11,17 +11,21 @@ const icon = L.icon({
 })
 
 export default function Maps() {
+  
     function LocationMarker() {
         const [position, setPosition] = useState(null)
+        
         const map = useMapEvents({
-          click() {
-            map.locate()
-          },
           locationfound(e) {
-            setPosition(e.latlng)
-            map.flyTo(e.latlng, map.getZoom())
+            setPosition(e.latlng);
+            map.flyTo(e.latlng, map.getZoom());
           },
-        })
+        });
+      
+        useEffect(() => {
+          // dependency array --> everytime the mapEvent changes, it will locate
+          map.locate();
+        }, [map]);
       
         return position === null ? null : (
           <Marker position={position} icon={icon}>
