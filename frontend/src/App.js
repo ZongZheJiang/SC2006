@@ -1,7 +1,7 @@
 import React from "react";
 import logo from './logo.svg';
 import './App.css';
-import Maps from './Maps';
+import Maps from './components/Maps';
 
 function App() {
   return (
