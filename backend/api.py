@@ -11,13 +11,14 @@ app = Flask(__name__)
 URA_ACCESS_KEY = '2401e0c5-f31d-4434-8261-3db6c18ffcdc'
 TOKEN = None
 TOKEN_EXPIRY = None
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 
 
 api_url_base= 'https://www.ura.gov.sg/uraDataService/insertNewToken.action'
 
 headers = {
-    'AccessKey': '2401e0c5-f31d-4434-8261-3db6c18ffcdc',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    'AccessKey': URA_ACCESS_KEY,
+    'User-Agent': USER_AGENT
     }
 
 def get_token():  
@@ -96,7 +97,7 @@ def get_carpark_rates():
     headers = {
         "AccessKey": URA_ACCESS_KEY,
         "Token": token,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': USER_AGENT
     }
 
     response = requests.get(url, headers=headers)
