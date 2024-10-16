@@ -13,27 +13,21 @@ TOKEN = None
 TOKEN_EXPIRY = None
 
 
-def get_token():
-    '''get token to access ura carpark rates and availability'''
-    global TOKEN, TOKEN_EXPIRY
-    if TOKEN and TOKEN_EXPIRY and datetime.now() < TOKEN_EXPIRY:
-        print(f"Using existing token: {TOKEN}")
-        return TOKEN
+api_url_base= 'https://www.ura.gov.sg/uraDataService/insertNewToken.action'
 
-    url = "https://www.ura.gov.sg/uraDataService/insertNewToken.action"
-    headers = {'AccessKey': URA_ACCESS_KEY}
-    print(f"Requesting new token with headers: {headers}")
-    response = requests.get(url, headers=headers, verify=False)
-    print(f"Token response status: {response.status_code}")
-    print(f"Token response content: {response.text}")
-    data = response.json()
-    if data['Status'] == 'Success':
-        TOKEN = data['Result']
-        TOKEN_EXPIRY = datetime.now() + timedelta(days=1)
-        print(f"New token generated: {TOKEN}")
-        return TOKEN
+headers = {
+    'AccessKey': '2401e0c5-f31d-4434-8261-3db6c18ffcdc',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
+
+def get_token():  
+    response = requests.get(api_url_base, headers=headers)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data.get('Result')
     else:
-        raise Exception(f"Failed to get token: {data}")
+        return None
 
 
 # @app.route("/")
@@ -101,7 +95,8 @@ def get_carpark_rates():
     url = "https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details"
     headers = {
         "AccessKey": URA_ACCESS_KEY,
-        "Token": token
+        "Token": token,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     }
 
     response = requests.get(url, headers=headers)
