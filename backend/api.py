@@ -51,9 +51,9 @@ def get_token():
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/initialise-carpark-table")
-def get_carpark_list():
-    carpark_dict = {}
+@app.route("/get_carpark_nameToNumber")
+def get_carpark_nameToNumber():
+    carpark_nameToNumber = {}
     csv_file = 'HDBCarparkInformation.csv'
     
     with open(csv_file, mode='r') as file:
@@ -64,10 +64,29 @@ def get_carpark_list():
         for row in reader:
             # Use Carpark_Name as the key and the rest of the row as the value
             carpark_name = row['address']
-            carpark_dict[carpark_name] = {
+            carpark_nameToNumber[carpark_name] = {
                 'carpark_number': row['car_park_no']
             }
-    return carpark_dict
+    return carpark_nameToNumber
+
+@app.route("/get_carpark_nameToLongLat")
+def get_carpark_nameToLongLat():
+    carpark_nameToLongLat = {}
+    csv_file = 'HDBCarparkInformation.csv'
+    
+    with open(csv_file, mode='r') as file:
+        # Create a CSV reader that returns rows as dictionaries
+        reader = csv.DictReader(file)
+
+        # Iterate through each row and store it in the dictionary
+        for row in reader:
+            # Use Carpark_Name as the key and the rest of the row as the value
+            carpark_name = row['address']
+            carpark_nameToLongLat[carpark_name] = {
+                'long': row['long'],
+                'lat': row['lat']
+            }
+    return carpark_nameToLongLat
 
 @app.route('/carpark-availability')
 def get_carpark_availability():
