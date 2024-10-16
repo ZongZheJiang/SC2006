@@ -2,7 +2,9 @@ from flask import Flask, jsonify
 import requests
 import csv
 from datetime import datetime, timedelta
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 
 #global variables
@@ -10,23 +12,28 @@ URA_ACCESS_KEY = '2401e0c5-f31d-4434-8261-3db6c18ffcdc'
 TOKEN = None
 TOKEN_EXPIRY = None
 
+
 def get_token():
     '''get token to access ura carpark rates and availability'''
-    global TOKEN, TOEN_EXPIRY
+    global TOKEN, TOKEN_EXPIRY
     if TOKEN and TOKEN_EXPIRY and datetime.now() < TOKEN_EXPIRY:
+        print(f"Using existing token: {TOKEN}")
         return TOKEN
-    
+
     url = "https://www.ura.gov.sg/uraDataService/insertNewToken.action"
     headers = {'AccessKey': URA_ACCESS_KEY}
-    response = requests.get(url, headers=headers)
+    print(f"Requesting new token with headers: {headers}")
+    response = requests.get(url, headers=headers, verify=False)
+    print(f"Token response status: {response.status_code}")
+    print(f"Token response content: {response.text}")
     data = response.json()
-
     if data['Status'] == 'Success':
         TOKEN = data['Result']
         TOKEN_EXPIRY = datetime.now() + timedelta(days=1)
+        print(f"New token generated: {TOKEN}")
         return TOKEN
     else:
-        raise Exception("Failed to get token")
+        raise Exception(f"Failed to get token: {data}")
 
 
 # @app.route("/")
@@ -74,7 +81,7 @@ def get_carpark_rates():
 
     url = "https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details"
     headers = {
-        "AceessKey": URA_ACCESS_KEY,
+        "AccessKey": URA_ACCESS_KEY,
         "Token": token
     }
 
@@ -85,3 +92,5 @@ def get_carpark_rates():
         return jsonify(data['Result'])
     else:
         return jsonify({'error': 'Failed to fetch car park rates'}), 500
+    
+
