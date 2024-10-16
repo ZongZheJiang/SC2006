@@ -119,7 +119,7 @@ function Navigation() {
   }, [startPoint, endPoint]);
 
   return (
-    <div>
+    <div className="page">
       <div className="top-bar">
         <Link to="/bookmark" className="icon-link">
           <MdOutlineBookmarkBorder size={24} />
