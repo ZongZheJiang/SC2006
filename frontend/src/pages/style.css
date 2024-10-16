@@ -42,11 +42,10 @@
 
 .top-bar {
     display: flex;
-    width: 90%;
+    width: 95%;
     height: 50px;
     border-radius: 20px;
     margin-left: 0%;
-    align-self: center;
     justify-content: space-between;
     align-items: center;
     padding: 10px 20px;
