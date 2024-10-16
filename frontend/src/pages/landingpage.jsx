@@ -35,7 +35,12 @@ function LandingPage() {
       <div>
         <h1 style={{ color: "black" }}>Preparing Your Trip...</h1>
       </div>
-      <div style={{ width: "50%", height: "70%" }}>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <div style={{ width: "100%", height: "70%" }}>
         <Lottie animationData={loadingAnimation} loop={true} />
       </div>
     </div>

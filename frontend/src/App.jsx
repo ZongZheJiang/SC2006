@@ -4,14 +4,18 @@ import logo from "./logo.svg";
 import "./App.css";
 import Navigation from "./pages/navigation.jsx";
 import LandingPage from "./pages/landingpage.jsx";
+import Settings from "./pages/settings.jsx";
+import Bookmark from "./pages/bookmark.jsx";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/navigation" element={<Navigation />} />
           <Route path="/" element={<LandingPage />} />
+          <Route path="/navigation" element={<Navigation />} />
+          <Route path="/bookmark" element={<Bookmark />} />
+          <Route path="/settings" element={<Settings />} />
           <Route
             path="/home"
             element={

@@ -6,6 +6,10 @@ import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import axios from "axios";
 import "./style.css";
 
+import { Link } from "react-router-dom";
+import { TbSettings } from "react-icons/tb";
+import { MdOutlineBookmarkBorder } from "react-icons/md";
+
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 function Navigation() {
@@ -116,10 +120,17 @@ function Navigation() {
 
   return (
     <div>
-      <h1>Navigation</h1>
+      <div className="top-bar">
+        <Link to="/bookmark" className="icon-link">
+          <MdOutlineBookmarkBorder size={24} />
+        </Link>
+        <h1>Navigation</h1>
+        <Link to="/settings" className="icon-link">
+          <TbSettings size={24} />
+        </Link>
+      </div>
       <div className="mapContainer" ref={mapContainer} />
     </div>
   );
 }
-
 export default Navigation;
