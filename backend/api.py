@@ -2,43 +2,54 @@ from flask import Flask, jsonify
 import requests
 import csv
 from datetime import datetime, timedelta
-import logging
+import urllib3
+urllib3.disable_warnings()
+import json
 
-logging.basicConfig(level=logging.DEBUG)
-app = Flask(__name__)
 
 #global variables
 URA_ACCESS_KEY = '2401e0c5-f31d-4434-8261-3db6c18ffcdc'
 TOKEN = None
 TOKEN_EXPIRY = None
 
+app = Flask(__name__)
 
 def get_token():
-    '''get token to access ura carpark rates and availability'''
-    global TOKEN, TOKEN_EXPIRY
-    if TOKEN and TOKEN_EXPIRY and datetime.now() < TOKEN_EXPIRY:
-        print(f"Using existing token: {TOKEN}")
-        return TOKEN
-
     url = "https://www.ura.gov.sg/uraDataService/insertNewToken.action"
-    headers = {'AccessKey': URA_ACCESS_KEY}
-    print(f"Requesting new token with headers: {headers}")
-    response = requests.get(url, headers=headers, verify=False)
-    print(f"Token response status: {response.status_code}")
-    print(f"Token response content: {response.text}")
-    data = response.json()
-    if data['Status'] == 'Success':
-        TOKEN = data['Result']
-        TOKEN_EXPIRY = datetime.now() + timedelta(days=1)
-        print(f"New token generated: {TOKEN}")
-        return TOKEN
-    else:
-        raise Exception(f"Failed to get token: {data}")
+    payload = {}
+    headers = {
+        'AccessKey': '2401e0c5-f31d-4434-8261-3db6c18ffcdc',
+        'Cookie': '__nxquid=SZcRzGjcscZURbYH/M7bNrvVllWh+A==0014',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.ura.gov.sg/',
+        'Origin': 'https://www.ura.gov.sg'
+    }
+    session = requests.Session()
+    try:
+        response = session.get(url, headers=headers, data=payload)
 
-
-# @app.route("/")
-# def hello_world():
-#     return "<p>Hello, World!</p>"
+        if response.headers.get('Content-Type', '').startswith('application/json'):
+            try:
+                data = response.json()
+                if data.get('Status') == 'Success':
+                    return data.get('Result')
+                else:
+                    raise Exception(f"Failed to get token: {data}")
+            except requests.exceptions.JSONDecodeError:
+                print("Failed to parse JSON response")
+                return None
+        else:
+            print(f"Unexpected content type: {response.headers.get('Content-Type')}")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return None
+    
+@app.route("/")
+def hello_world():
+    return "<p>Hello, World!</p>"
 
 @app.route("/initialise-carpark-table")
 def get_carpark_list():
@@ -75,22 +86,45 @@ def get_carpark_availability():
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
     
+
 @app.route('/carpark-rates')
 def get_carpark_rates():
     token = get_token()
+    if not token:
+        return jsonify({'error': 'Failed to get token'}), 500
 
     url = "https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Details"
+    payload = {}
     headers = {
         "AccessKey": URA_ACCESS_KEY,
-        "Token": token
+        "Token": token,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.ura.gov.sg/',
+        'Origin': 'https://www.ura.gov.sg'
     }
 
-    response = requests.get(url, headers=headers)
-    data = response.json()
+    session = requests.Session()
 
-    if data['Status'] == 'Success':
-        return jsonify(data['Result'])
-    else:
-        return jsonify({'error': 'Failed to fetch car park rates'}), 500
-    
+    try:
+        response = session.get(url, headers=headers, data=payload)
 
+        if response.headers.get('Content-Type', '').startswith('application/json'):
+            try:
+                data = response.json()
+                if data.get('Status') == 'Success':
+                    return jsonify(data.get('Result'))
+                else:
+                    return jsonify({'error': f"API returned unsuccessful status: {data.get('Message', 'No message provided')}"}), 500
+            except json.JSONDecodeError as e:
+                return jsonify({'error': f'Failed to parse JSON response: {str(e)}', 'content': response.text[:1000]}), 500
+        else:
+            return jsonify({
+                'error': f"Unexpected content type: {response.headers.get('Content-Type')}",
+                'content': response.text[:1000],
+                'status_code': response.status_code
+            }), 500
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Request failed: {str(e)}'}), 500
