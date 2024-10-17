@@ -57,6 +57,11 @@ function Navigation() {
 
     geocoder.on("result", (e) => {
       setEndPoint(e.result.center);
+      //THIS IS THE DESTINATION COORDINATES %!*)@$&%)(#@!*&%_)#@&*%()!@#*%!@#%)#@(!*()@#%*#@!)(%@#&(*!%&#_%*)
+      //THIS IS THE DESTINATION COORDINATES @!#&*)%&$*)#!@&NPIFH)@D!#@&M)_*(U!@#_J)E!KU@)(+DU@#+D@(U))
+      //THIS IS THE DESTINATION COORDINATES *%#!@)(*%$(!@#UJE)_I@E!JUD_I)
+      //THIS IS THE DESTINATION COORDINATES $*!#@()EKJI)@#!UE!@)I
+      console.log("Destination coordinates:", e.result.center);
     });
   }, []);
 
