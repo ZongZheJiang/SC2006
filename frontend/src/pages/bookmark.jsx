@@ -26,7 +26,7 @@ function Bookmark() {
 
   // The useEffect runs only once when the component mounts, which is the correct behavior for 
   // fetching data from an API.
-  // If you were to depend on bookmarks, you'd end up in a cycle where updating bookmarks triggers the useEffect,
+  // If 'bookmarks' was a dependency, you'd end up in a cycle where updating bookmarks triggers the useEffect,
   // which fetches data and updates bookmarks again, causing the component to refetch the data infinitely.
   useEffect(() => {
     // const fetchBookmarks = async () => {
