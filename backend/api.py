@@ -1,10 +1,12 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 import requests
 import csv
 from datetime import datetime, timedelta
 import urllib3
 urllib3.disable_warnings()
 import json
+import database as db
 
 
 #global variables
@@ -13,6 +15,10 @@ TOKEN = None
 TOKEN_EXPIRY = None
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
+db.main()
 
 def get_token():
     url = "https://www.ura.gov.sg/uraDataService/insertNewToken.action"
@@ -147,3 +153,38 @@ def get_carpark_rates():
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'Request failed: {str(e)}'}), 500
+    
+
+@app.route("/user", methods = ["GET"])
+def get_user():
+    uid = request.args.get("uid")
+    if uid == None:
+        resp = db.create_user()
+    return jsonify(resp), 200
+
+@app.route("/bookmarks", methods=["GET"])
+def get_bookmarks():
+    uid = request.args.get("uid")
+    resp = db.retrieve_bookmarks(uid)
+    return jsonify(resp), 200 # Returns list of locations
+    
+@app.route("/bookmarks/add", methods=["POST"])
+def add_bookmarks():
+    data = request.get_json()
+    
+    db.insert_bookmark(data.get("uid"), data.get("location"))
+    
+    # Return a created response
+    return jsonify({"message": "Bookmark created successfully"}), 201  # Created
+    
+@app.route("/bookmarks/delete", methods=["POST"])
+def remove_bookmarks():
+    data = request.get_json()
+    
+    db.delete_bookmark(data.get("uid"), data.get("location"))
+    
+    # Return a removed response
+    return jsonify({"message": "Bookmark removed successfully"}), 200  # Removed
+
+if __name__ == "__main__":
+    app.run(debug=True)
