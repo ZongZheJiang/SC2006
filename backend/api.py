@@ -176,6 +176,7 @@ def add_bookmarks():
     
     # Return a created response
     return jsonify({"message": "Bookmark created successfully"}), 201  # Created
+
     
 @app.route("/bookmarks/delete", methods=["POST"])
 def remove_bookmarks():
