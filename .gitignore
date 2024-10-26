@@ -1,3 +1,2 @@
-
-backend/carnav.db
-backend/__pycache__/database.cpython-312.pyc
+*.pyc
+__pycache__/

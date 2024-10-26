@@ -94,7 +94,7 @@ def get_carpark_nameToLongLat():
             }
     return carpark_nameToLongLat
 
-@app.route('/carpark-availability')
+@app.route('/hdb-carpark-availability')
 def get_carpark_availability():
     # API endpoint
     url = "https://api.data.gov.sg/v1/transport/carpark-availability"
@@ -112,7 +112,49 @@ def get_carpark_availability():
         return jsonify({'error': str(e)}), 500
     
 
-@app.route('/carpark-rates')
+@app.route('/ura-carpark-availability')
+def get_ura_carpark_availability():
+    token = get_token()
+    if not token:
+        return jsonify({'error': 'Failed to get token'}), 500
+
+    url = "https://www.ura.gov.sg/uraDataService/invokeUraDS?service=Car_Park_Availability"
+    payload = {}
+    headers = {
+        "AccessKey": URA_ACCESS_KEY,
+        "Token": token,
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Referer': 'https://www.ura.gov.sg/',
+        'Origin': 'https://www.ura.gov.sg'
+    }
+
+    session = requests.Session()
+
+    try:
+        response = session.get(url, headers=headers, data=payload)
+
+        if response.headers.get('Content-Type', '').startswith('application/json'):
+            try:
+                data = response.json()
+                if data.get('Status') == 'Success':
+                    return jsonify(data.get('Result'))
+                else:
+                    return jsonify({'error': f"API returned unsuccessful status: {data.get('Message', 'No message provided')}"}), 500
+            except json.JSONDecodeError as e:
+                return jsonify({'error': f'Failed to parse JSON response: {str(e)}', 'content': response.text[:1000]}), 500
+        else:
+            return jsonify({
+                'error': f"Unexpected content type: {response.headers.get('Content-Type')}",
+                'content': response.text[:1000],
+                'status_code': response.status_code
+            }), 500
+
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Request failed: {str(e)}'}), 500
+
+@app.route('/ura-carpark-rates')
 def get_carpark_rates():
     token = get_token()
     if not token:
@@ -176,6 +218,7 @@ def add_bookmarks():
     
     # Return a created response
     return jsonify({"message": "Bookmark created successfully"}), 201  # Created
+
     
 @app.route("/bookmarks/delete", methods=["POST"])
 def remove_bookmarks():
