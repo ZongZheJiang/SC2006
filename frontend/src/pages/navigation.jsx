@@ -121,7 +121,7 @@ function Navigation() {
   return (
     <div className="page">
       <div className="top-bar">
-        <Link to="/bookmark" className="icon-link">
+        <Link to="/bookmarks" className="icon-link">
           <MdOutlineBookmarkBorder size={24} />
         </Link>
         <h1>Navigation</h1>
