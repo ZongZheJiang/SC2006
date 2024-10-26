@@ -13,10 +13,10 @@ def close_connection(con: sqlite3.Connection):
 #---
 # Bookmark
 
-def insert_bookmark(uid: str, loc: str):
+def insert_bookmark(uid: str, loc: str, coords: str):
     con = open_connection(db_name)
     cur = con.cursor()
-    cur.execute("INSERT INTO bookmarks (user_id, location) VALUES ((SELECT id FROM users WHERE user_id = ?), ?);", (uid, loc))
+    cur.execute("INSERT INTO bookmarks (user_id, location, lat, long) VALUES ((SELECT id FROM users WHERE user_id = ?), ?, ?, ?);", (uid, loc, coords[0], coords[1]))
     con.commit()
     cur.close()
     close_connection(con)
@@ -32,10 +32,10 @@ def delete_bookmark(uid: str, loc: str):
 def retrieve_bookmarks(uid: str):
     con = open_connection(db_name)
     cur = con.cursor()
-    res = cur.execute("SELECT location from bookmarks where user_id = (SELECT id FROM users WHERE user_id = ?);", (uid,)).fetchall()
+    res = cur.execute("SELECT location, lat, long from bookmarks where user_id = (SELECT id FROM users WHERE user_id = ?);", (uid,)).fetchall()
     cur.close()
     close_connection(con)
-    return [item for sublist in res for item in sublist]
+    return res
     
 #---
 # User
@@ -64,6 +64,8 @@ def create_db(con: sqlite3.Connection):
                 id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 user_id VARCHAR(10) NOT NULL,
                 location VARCHAR(255) NOT NULL,
+                lat VARCHAR(100) NOT NULL,
+                long VARCHAR(100) NOT NULL,
                 FOREIGN KEY (user_id) REFERENCES users(id)
                 );
                 """)

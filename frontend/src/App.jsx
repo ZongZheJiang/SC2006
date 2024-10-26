@@ -1,13 +1,33 @@
-import React from "react";
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 import Navigation from "./pages/navigation.jsx";
 import LandingPage from "./pages/landingpage.jsx";
 import Settings from "./pages/settings.jsx";
 import Bookmarks from "./pages/bookmarks.jsx";
 
-function App() {
+function App() { 
+  const [cookies, setCookie] = useCookies(["user"]);
+  const backend_url = "http://localhost:5000";
+  useEffect(() => {
+    let fetchData = async () => {
+      try {
+        await axios.get(backend_url + "/user")
+        .then(res => {
+        console.log(res.data);
+        setCookie('user', res.data, { path: '/', maxAge: 3155760000, sameSite: "Strict", secure: true}); // 100 years
+        }).catch(err => console.error(err));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    if (!cookies.user) {
+      fetchData();
+    }
+  }, [cookies.user, setCookie]);
   return (
     <Router>
       <div className="App">

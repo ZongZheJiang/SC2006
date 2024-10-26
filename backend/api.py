@@ -16,6 +16,7 @@ TOKEN_EXPIRY = None
 
 app = Flask(__name__)
 cors = CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 db.main()
@@ -214,7 +215,7 @@ def get_bookmarks():
 def add_bookmarks():
     data = request.get_json()
     
-    db.insert_bookmark(data.get("uid"), data.get("location"))
+    db.insert_bookmark(data.get("uid"), data.get("location"), data.get("coordinates"))
     
     # Return a created response
     return jsonify({"message": "Bookmark created successfully"}), 201  # Created

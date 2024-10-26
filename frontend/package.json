@@ -18,6 +18,7 @@
     "lottie-web": "^5.12.2",
     "mapbox-gl": "^2.15.0",
     "react": "^18.3.1",
+    "react-cookie": "^7.2.1",
     "react-dom": "^18.3.1",
     "react-icons": "^4.11.0",
     "react-router-dom": "^6.22.1",

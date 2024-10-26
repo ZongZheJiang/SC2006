@@ -4,6 +4,7 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { useCookies } from "react-cookie";
 import {
   Container,
   List,
@@ -20,6 +21,9 @@ const Bookmarks = () => {
   const map = useRef(null);
   const [bookmarks, setBookmarks] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [cookies] = useCookies(["user"]);
+  const backend_url = "http://localhost:5000";
+  const uid = cookies.user
 
   useEffect(() => {
     if (map.current) return;
@@ -62,15 +66,17 @@ const Bookmarks = () => {
 
   const addBookmark = async () => {
     if (!selectedLocation) return;
-
+  
     try {
-      const response = await axios.post("/bookmarks/add", {
+      console.log(selectedLocation);
+      await axios.post(backend_url + "/bookmarks/add", {
+        uid: uid,
         location: selectedLocation.name,
         coordinates: selectedLocation.coordinates,
       });
       setBookmarks((prevBookmarks) => [
         ...prevBookmarks,
-        selectedLocation.name,
+        [selectedLocation.name, selectedLocation.coordinates[0], selectedLocation[1]],
       ]);
       setSelectedLocation(null);
     } catch (error) {
@@ -80,8 +86,12 @@ const Bookmarks = () => {
 
   const fetchBookmarks = async () => {
     try {
-      const response = await axios.get("/bookmarks");
-      setBookmarks(response.data);
+    const response = await axios.get(backend_url + "/bookmarks", {
+      params: {
+        uid: uid
+      }
+    });
+    setBookmarks(response.data);
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
     }
@@ -93,7 +103,10 @@ const Bookmarks = () => {
 
   const deleteBookmark = async (location) => {
     try {
-      await axios.post("/bookmarks/delete", { location });
+      await axios.post(backend_url + "/bookmarks/delete", { 
+        location: location[0],
+        uid: uid
+       });
       setBookmarks((prevBookmarks) =>
         prevBookmarks.filter((bookmark) => bookmark !== location)
       );
@@ -126,7 +139,8 @@ const Bookmarks = () => {
         <List>
           {bookmarks.map((bookmark, index) => (
             <ListItem key={index}>
-              <ListItemText primary={bookmark} />
+              <ListItemText primary={bookmark[0]} />
+              {console.log(bookmark)}
               <Button color="secondary" onClick={() => deleteBookmark(bookmark)}>
                 Delete
               </Button>
