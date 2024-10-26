@@ -76,7 +76,7 @@ const Bookmarks = () => {
       });
       setBookmarks((prevBookmarks) => [
         ...prevBookmarks,
-        [selectedLocation.name, selectedLocation.coordinates[0], selectedLocation[1]],
+        [selectedLocation.name, selectedLocation.coordinates[0], selectedLocation.coordinates[1]],
       ]);
       setSelectedLocation(null);
     } catch (error) {
