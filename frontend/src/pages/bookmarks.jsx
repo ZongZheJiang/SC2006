@@ -22,11 +22,14 @@ const Bookmarks = () => {
   const [bookmarks, setBookmarks] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [cookies] = useCookies(["user"]);
-  const backend_url = "http://localhost:5000";
+  const backend_url = "http://127.0.0.1:5000";
   const uid = cookies.user
 
   useEffect(() => {
     if (map.current) return;
+    console.log('uid');
+    console.log(cookies);
+    console.log(uid);
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
@@ -118,10 +121,9 @@ const Bookmarks = () => {
   return (
     <Container>
       <div className="page">
-        <div className="top-bar" style={{alignContent: "center"}}>
+        <div className="top-bar" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
           <h1>Bookmarks</h1>
         </div>
-
         <div className="mapContainer" ref={mapContainer} style={{ height: "300px", marginBottom: "16px" }} />
 
         <Button

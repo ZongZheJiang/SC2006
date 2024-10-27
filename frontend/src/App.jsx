@@ -11,15 +11,17 @@ import Bookmarks from "./pages/bookmarks.jsx";
 
 function App() { 
   const [cookies, setCookie] = useCookies(["user"]);
-  const backend_url = "http://localhost:5000";
+  const backend_url = "http://127.0.0.1:5000";
   useEffect(() => {
     let fetchData = async () => {
       try {
         await axios.get(backend_url + "/user")
-        .then(res => {
-        console.log(res.data);
-        setCookie('user', res.data, { path: '/', maxAge: 3155760000, sameSite: "Strict", secure: true}); // 100 years
-        }).catch(err => console.error(err));
+          .then(res => {
+            console.log('uid');
+            console.log(res.data);
+            setCookie('user', res.data, { path: '/', maxAge: 3155760000, sameSite: "Lax", secure: false}); // 100 years
+            })
+          .catch(err => console.error(err));
       } catch (error) {
         console.error('Error fetching data:', error);
       }

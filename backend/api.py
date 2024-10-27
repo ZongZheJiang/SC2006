@@ -15,8 +15,10 @@ TOKEN = None
 TOKEN_EXPIRY = None
 
 app = Flask(__name__)
-cors = CORS(app)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+cors = CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:5000"],
+                              "methods": ["GET", "POST", "OPTIONS"],
+                              "allow_headers": ["Origin", "Authorization", "X-Frame-Options", "X-Requested-With", "DNT", "User-Agent", "If-Modified-Since", "Cache-Control", "Range", "X-Real-IP", "HOST", "X-NginX-Proxy", "Content-Type", "If-Match"],
+                                "expose_headers": ["ETag", "Content-Length", "Content-Range", "Access-Control-Allow-Origin"]}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 db.main()
