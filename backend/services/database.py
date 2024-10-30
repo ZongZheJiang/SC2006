@@ -1,7 +1,10 @@
 import sqlite3
 import random
+import os
+from dotenv import load_dotenv
 
-db_name = "carnav.db"
+load_dotenv()
+db_name = os.getenv("DB")
 
 #---
 # Connection
@@ -36,7 +39,7 @@ def retrieve_bookmarks(uid: str):
     cur.close()
     close_connection(con)
     return res
-    
+
 #---
 # User
 
@@ -85,7 +88,7 @@ def test_db(con: sqlite3.Connection):
     res = cur.execute("SELECT name FROM sqlite_master").fetchall()
     if res[0][0] == "bookmarks" and (res[1][0] == "users" or res[2][0] == "users"):
         return True
-    
+
     return False
 
 def main():
@@ -94,7 +97,7 @@ def main():
     res = test_db(con)
     if res:
         print("DB create OK")
-    
+
     close_connection(con)
 #---
 if __name__ == "__main__":

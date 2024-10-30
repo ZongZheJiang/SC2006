@@ -1,0 +1,8 @@
+flask
+flask-cors
+
+dotenv
+psutil
+
+redis
+sqlite3
