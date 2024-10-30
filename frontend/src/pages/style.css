@@ -67,3 +67,79 @@
 .icon-link:hover {
     color: #007bff;
 }
+
+.carpark-popup {
+    position: absolute;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: 400px;
+    z-index: 1;
+    animation: slideUp 0.5s ease-out forwards;
+    transition: transform 0.5s ease-out;
+}
+
+.carpark-popup.collapsed {
+    transform: translate(-50%, calc(100% - 80px));
+}
+
+@keyframes slideUp {
+    from {
+        bottom: -100%;
+    }
+    to {
+        bottom: 20px;
+    }
+}
+
+.carpark-popup h2 {
+    margin: 0 0 15px 0;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.carpark-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.carpark-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.carpark-item:last-child {
+    border-bottom: none;
+}
+
+.carpark-item h3 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: #444;
+}
+
+.carpark-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.carpark-details p {
+    margin: 0;
+}
+
+.marker {
+    background-image: url("https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png");
+    background-size: cover;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+}

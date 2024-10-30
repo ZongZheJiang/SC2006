@@ -11,6 +11,8 @@ import {
   Box,
 } from "@mui/material";
 
+import axios from "axios";
+
 import { MdOutlinePerson, MdOutlineNotificationsActive } from "react-icons/md";
 import { TbHeadphones } from "react-icons/tb";
 import { RiQuestionLine } from "react-icons/ri";
@@ -18,11 +20,33 @@ import { FaLanguage } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 
 function Settings() {
+  const pingBackend = async () => {
+    try {
+      // Query parameters
+      const params = {
+        lat: 1.30290492,
+        lon: 103.822247475,
+      };
+
+      // Make GET request with query parameters
+      const response = await axios.get("http://127.0.0.1:5000/find", {
+        params,
+      });
+      console.log("Response:", response.data);
+
+      // Handle the response as needed
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error appropriately
+    }
+  };
+
   const settingsSections = [
     {
       title: "Account",
       description: "Manage your account settings",
       icon: <MdOutlinePerson size={30} />,
+      onClick: pingBackend(),
     },
     {
       title: "Language",

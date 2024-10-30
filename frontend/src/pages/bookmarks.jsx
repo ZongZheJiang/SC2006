@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+import { IoIosArrowBack } from "react-icons/io";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import mapboxgl from "mapbox-gl";
@@ -12,22 +14,22 @@ import {
   ListItemText,
   Divider,
   Button,
+  IconButton,
 } from "@mui/material";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
-
+const backend_url = process.env.REACT_APP_BACKEND_URL;
 const Bookmarks = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [bookmarks, setBookmarks] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [cookies] = useCookies(["user"]);
-  const backend_url = "http://127.0.0.1:5000";
-  const uid = cookies.user
+  const uid = cookies.user;
 
   useEffect(() => {
     if (map.current) return;
-    console.log('uid');
+    console.log("uid");
     console.log(cookies);
     console.log(uid);
 
@@ -69,7 +71,7 @@ const Bookmarks = () => {
 
   const addBookmark = async () => {
     if (!selectedLocation) return;
-  
+
     try {
       console.log(selectedLocation);
       await axios.post(backend_url + "/bookmarks/add", {
@@ -79,7 +81,11 @@ const Bookmarks = () => {
       });
       setBookmarks((prevBookmarks) => [
         ...prevBookmarks,
-        [selectedLocation.name, selectedLocation.coordinates[0], selectedLocation.coordinates[1]],
+        [
+          selectedLocation.name,
+          selectedLocation.coordinates[0],
+          selectedLocation.coordinates[1],
+        ],
       ]);
       setSelectedLocation(null);
     } catch (error) {
@@ -89,12 +95,12 @@ const Bookmarks = () => {
 
   const fetchBookmarks = async () => {
     try {
-    const response = await axios.get(backend_url + "/bookmarks", {
-      params: {
-        uid: uid
-      }
-    });
-    setBookmarks(response.data);
+      const response = await axios.get(backend_url + "/bookmarks", {
+        params: {
+          uid: uid,
+        },
+      });
+      setBookmarks(response.data);
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
     }
@@ -106,12 +112,12 @@ const Bookmarks = () => {
 
   const deleteBookmark = async (location) => {
     try {
-      await axios.post(backend_url + "/bookmarks/delete", { 
+      await axios.post(backend_url + "/bookmarks/delete", {
         location: location[0],
-        uid: uid
-       });
+        uid: uid,
+      });
       setBookmarks((prevBookmarks) =>
-        prevBookmarks.filter((bookmark) => bookmark !== location)
+        prevBookmarks.filter((bookmark) => bookmark !== location),
       );
     } catch (error) {
       console.error("Error deleting bookmark:", error);
@@ -121,10 +127,30 @@ const Bookmarks = () => {
   return (
     <Container>
       <div className="page">
-        <div className="top-bar" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <div
+          className="top-bar"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <IconButton
+            component={Link}
+            to="/navigation"
+            edge="start"
+            color="inherit"
+            aria-label="back"
+          >
+            <IoIosArrowBack size={24} />
+          </IconButton>
           <h1>Bookmarks</h1>
         </div>
-        <div className="mapContainer" ref={mapContainer} style={{ height: "300px", marginBottom: "16px" }} />
+        <div
+          className="mapContainer"
+          ref={mapContainer}
+          style={{ height: "300px", marginBottom: "16px" }}
+        />
 
         <Button
           variant="contained"
@@ -132,7 +158,9 @@ const Bookmarks = () => {
           onClick={addBookmark}
           disabled={!selectedLocation}
         >
-          {selectedLocation ? `Add "${selectedLocation.name}" to Bookmarks` : "Search for a location"}
+          {selectedLocation
+            ? `Add "${selectedLocation.name}" to Bookmarks`
+            : "Search for a location with map"}
         </Button>
 
         <Divider style={{ margin: "16px 0" }} />
@@ -143,7 +171,10 @@ const Bookmarks = () => {
             <ListItem key={index}>
               <ListItemText primary={bookmark[0]} />
               {console.log(bookmark)}
-              <Button color="secondary" onClick={() => deleteBookmark(bookmark)}>
+              <Button
+                color="secondary"
+                onClick={() => deleteBookmark(bookmark)}
+              >
                 Delete
               </Button>
             </ListItem>
