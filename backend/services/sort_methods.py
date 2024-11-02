@@ -44,19 +44,33 @@ KEY=os.getenv("GROQ_KEY")
 client = Groq(api_key=KEY)
 @measure_time
 def groq_inference(content_list):
-    messages=[
-        {
-            "role": "system",
-            "content":"You are a backend service to process natural language data as part of an app.\
-            Sort the array by increasing 'price' and return the data ALONE with NO extra verbosity.\
-            $1.20/hr MUST BE CHEAPER than $1.20 per ½ hr. DO NOT change double quotes to single quotes" \
+    messages = [
+            {
+                "role": "system",
+                "content": """You are a precise data processing service. Follow these requirements EXACTLY:
 
-        },
-        {
-            "role": "user",
-            "content": str(content_list)
-        }
-    ]
+    1. TASK: Sort the input array by 'price' in ascending order
+    2. FORMAT REQUIREMENTS:
+       - Maintain all original data fields
+       - Preserve exact string formats (esp. double quotes)
+       - Return ONLY the sorted array as valid JSON
+       - NO explanatory text or markdown
+    3. PRICE HANDLING:
+       - Convert all prices to hourly rate before sorting
+       - Example: "$1.20 per ½ hr" = $2.40/hr
+       - Handle variations like: /hr, per hour, per ½ hour, /half-hour
+    4. VALIDATION:
+       - Ensure output is parseable JSON array
+       - Verify all original fields are preserved
+       - Confirm prices are correctly ordered
+
+    OUTPUT FORMAT: [{"field": "value", ...}, ...]"""
+            },
+            {
+                "role": "user",
+                "content": str(content_list)
+            }
+        ]
 
     chat_completion = client.chat.completions.create(
         messages=messages,

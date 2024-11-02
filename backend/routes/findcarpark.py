@@ -24,7 +24,7 @@ def carparkfinder():
     res = search_dist(destination, carpark_data)
     update_result_with_HDB_lots(res)
     update_result_with_LTA_lots(res)
-    # sort_by_price(res)
+    sort_by_price(res)
     # sort_by_lots(res)
     return jsonify({
          "status": "success",
