@@ -8,7 +8,6 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import "@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { useCookies } from "react-cookie";
 import {
-  Container,
   List,
   ListItem,
   ListItemText,
@@ -16,6 +15,8 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import { DeleteOutline } from "@mui/icons-material";
+import "./style.css";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 const backend_url = process.env.REACT_APP_BACKEND_URL;
@@ -125,63 +126,66 @@ const Bookmarks = () => {
   };
 
   return (
-    <Container>
-      <div className="page">
-        <div
-          className="top-bar"
+    <div className="page" style={{ background: "#fcfcfc" }}>
+      <div
+        className="top-bar"
+        style={{
+          position: "relative",
+        }}
+      >
+        <IconButton
+          component={Link}
+          to="/navigation"
+          edge="start"
+          color="inherit"
+          aria-label="back"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            position: "absolute",
+            left: 10,
           }}
         >
-          <IconButton
-            component={Link}
-            to="/navigation"
-            edge="start"
-            color="inherit"
-            aria-label="back"
-          >
-            <IoIosArrowBack size={24} />
-          </IconButton>
-          <h1>Bookmarks</h1>
-        </div>
-        <div
-          className="mapContainer"
-          ref={mapContainer}
-          style={{ height: "300px", marginBottom: "16px" }}
-        />
-
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={addBookmark}
-          disabled={!selectedLocation}
-        >
-          {selectedLocation
-            ? `Add "${selectedLocation.name}" to Bookmarks`
-            : "Search for a location with map"}
-        </Button>
-
-        <Divider style={{ margin: "16px 0" }} />
-
-        <h3>My Bookmarks</h3>
-        <List>
-          {bookmarks.map((bookmark, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={bookmark[0]} />
-              {console.log(bookmark)}
-              <Button
-                color="secondary"
-                onClick={() => deleteBookmark(bookmark)}
-              >
-                Delete
-              </Button>
-            </ListItem>
-          ))}
-        </List>
+          <IoIosArrowBack size={24} />
+        </IconButton>
+        <h1 style={{ textAlign: "center" }}>Bookmarks</h1>
       </div>
-    </Container>
+      <div
+        className="mapContainer"
+        ref={mapContainer}
+        style={{ height: "300px", marginBottom: "16px" }}
+      />
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={addBookmark}
+        disabled={!selectedLocation}
+      >
+        {selectedLocation
+          ? `Add "${selectedLocation.name}" to Bookmarks`
+          : "Search for a location with map"}
+      </Button>
+      <Divider style={{ margin: "16px 0" }} />
+      <h3>
+        <br />
+        My Bookmarks
+      </h3>
+      <List className="bookmark-list">
+        {bookmarks.map((bookmark, index) => (
+          <React.Fragment key={index}>
+            <ListItem button className="bookmark-box">
+              <ListItemText primary={bookmark[0]} />
+              <IconButton
+                edge="end"
+                onClick={() => deleteBookmark(bookmark)}
+                color="error"
+              >
+                <DeleteOutline />
+              </IconButton>
+            </ListItem>
+          </React.Fragment>
+        ))}
+      </List>
+    </div>
   );
 };
 

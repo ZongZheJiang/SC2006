@@ -12,11 +12,11 @@ function LandingPage() {
   useEffect(() => {
     const fadeOutTimer = setTimeout(() => {
       setOpacity(0);
-    }, 1500);
+    }, 2000);
 
     const navigationTimer = setTimeout(() => {
-      navigate("/navigation");
-    }, 2000);
+      navigate("/settings");
+    }, 2500);
 
     return () => {
       isMounted.current = false;
@@ -40,7 +40,7 @@ function LandingPage() {
       <br />
       <br />
       <br />
-      <div style={{ width: "100%", height: "70%" }}>
+      <div style={{ width: "29%", height: "70%" }}>
         <Lottie animationData={loadingAnimation} loop={true} />
       </div>
     </div>

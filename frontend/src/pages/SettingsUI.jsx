@@ -1,14 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  Container,
   List,
   ListItem,
   ListItemText,
   Divider,
   ListItemIcon,
   IconButton,
-  Box,
 } from "@mui/material";
 
 import axios from "axios";
@@ -20,15 +18,13 @@ import { FaLanguage } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 
 function Settings() {
-  const pingBackend = async () => {
+  const someFunction = async () => {
     try {
-      // Query parameters
       const params = {
         lat: 1.30290492,
         lon: 103.822247475,
       };
 
-      // Make GET request with query parameters
       const response = await axios.get("http://127.0.0.1:5000/find", {
         params,
       });
@@ -46,7 +42,7 @@ function Settings() {
       title: "Account",
       description: "Manage your account settings",
       icon: <MdOutlinePerson size={30} />,
-      onClick: pingBackend(),
+      onClick: someFunction(),
     },
     {
       title: "Language",
@@ -71,19 +67,28 @@ function Settings() {
   ];
 
   return (
-    <Container maxWidth="md">
-      <Box display="flex" alignItems="center" mb={2}>
+    <div className="page">
+      <div
+        className="top-bar"
+        style={{
+          boxShadow: "none",
+        }}
+      >
         <IconButton
           component={Link}
           to="/navigation"
           edge="start"
           color="inherit"
           aria-label="back"
+          style={{
+            position: "absolute",
+            left: 10,
+          }}
         >
           <IoIosArrowBack size={24} />
         </IconButton>
-        <h1 style={{ marginLeft: "40%" }}>Settings</h1>
-      </Box>
+        <h1>Settings</h1>
+      </div>
       <List>
         {settingsSections.map((section, index) => (
           <React.Fragment key={section.title}>
@@ -98,7 +103,7 @@ function Settings() {
           </React.Fragment>
         ))}
       </List>
-    </Container>
+    </div>
   );
 }
 
