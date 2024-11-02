@@ -14,19 +14,19 @@ def sort_by_price(carpark_data):
     with_price=[]
     without_price=[]
     for carpark in carpark_data:
-        if carpark["price"]=="":
+        if carpark["price"]=="" or carpark["price"]=="-" :
             without_price.append(carpark)
         else:
             with_price.append(carpark)
-    sorted_with_price = natural_language_sort(with_price)
+    sorted_with_price = natural_language_processing(with_price)
     sorted_with_price.extend(without_price)
     carpark_data.clear()
     carpark_data.extend(sorted_with_price)
     return carpark_data
 
-def natural_language_sort(carpark_with_prices):
+def natural_language_processing(carpark_with_prices_data):
     data=[]
-    for carpark in carpark_with_prices:
+    for carpark in carpark_with_prices_data:
         data.append({"id":carpark["carpark_id"], "price":carpark["price"]})
 
     sorted_llm_data = groq_inference(data)
@@ -34,7 +34,7 @@ def natural_language_sort(carpark_with_prices):
     sorted_order = {item["id"]: index for index, item in enumerate(sorted_llm_data)}
 
     sorted_carparks = sorted(
-        carpark_with_prices,
+        carpark_with_prices_data,
         key=lambda x: sorted_order.get(x["carpark_id"], float('inf'))
     )
 
@@ -43,28 +43,28 @@ def natural_language_sort(carpark_with_prices):
 KEY=os.getenv("GROQ_KEY")
 client = Groq(api_key=KEY)
 @measure_time
-def groq_inference(content_list):
+def groq_inference(carpark_data):
     messages = [
             {
                 "role": "system",
                 "content": """You are a precise data processing service. Follow these requirements EXACTLY:
 
-    1. TASK: Sort the input array by 'price' in ascending order
-    2. FORMAT REQUIREMENTS:
-       - Maintain all original data fields
-       - Preserve exact string formats (esp. double quotes)
-       - Return ONLY the sorted array as valid JSON
-       - NO explanatory text or markdown
-    3. PRICE HANDLING:
-       - Convert all prices to hourly rate before sorting
-       - Example: "$1.20 per ½ hr" = $2.40/hr
-       - Handle variations like: /hr, per hour, per ½ hour, /half-hour
-    4. VALIDATION:
-       - Ensure output is parseable JSON array
-       - Verify all original fields are preserved
-       - Confirm prices are correctly ordered
+                1. TASK: Sort the input array by 'price' in ascending order
+                2. FORMAT REQUIREMENTS:
+                - Maintain all original data fields
+                - Preserve exact string formats (esp. double quotes)
+                - Return ONLY the sorted array as valid JSON
+                - NO explanatory text or markdown
+                3. PRICE HANDLING:
+                - Convert all prices to hourly rate before sorting
+                - Example: "$1.20 per ½ hr" = $2.40/hr
+                - Handle variations like: /hr, per hour, per ½ hour, /half-hour
+                4. VALIDATION:
+                - Ensure output is parseable JSON array
+                - Verify all original fields are preserved
+                - Confirm prices are correctly ordered
 
-    OUTPUT FORMAT: [{"field": "value", ...}, ...]"""
+                OUTPUT FORMAT: [{"field": "value", ...}, ...]"""
             },
             {
                 "role": "user",
