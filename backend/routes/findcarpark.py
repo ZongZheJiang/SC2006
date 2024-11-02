@@ -14,7 +14,6 @@ def load_redis(redis_server):
     redis_instance = redis_server
 
 @findcarpark_bp.route('/find')
-@measure_time
 def carparkfinder():
     carpark_data = get_carpark_data(redis_instance)
     lat = request.args.get('lat', type=float)
