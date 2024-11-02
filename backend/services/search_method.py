@@ -19,22 +19,21 @@ def calculate_distance(origin, destination):
     distance = EARTH_RADIUS * c
     return distance
 
-@measure_time
-def linear_search(target, carpark_data, k=5):
+def search_dist(target, carpark_data, k=10):
     res=set()
     for id in carpark_data.keys():
-        dist=calculate_distance(target, (float(carpark_data[id][1]), float(carpark_data[id][2])))
+        dist=calculate_distance(target, (float(carpark_data[id]['lat']), float(carpark_data[id]["long"])))
         res.add((dist, id))
         if len(res)>k:
             res.remove(max(res, key=lambda x: x[0]))
 
-    res= sorted(
-        [{"id": id,
-            "dist": dist,
-            "location": carpark_data[id][0],
-            "lat":carpark_data[id][1],
-            "long":carpark_data[id][2]}
 
-        for (dist,id) in res],
-        key=lambda x: x["dist"])
-    return res
+    result = []
+    for dist, id in res:
+        carpark_entry = carpark_data[id].copy()
+        carpark_entry['dist'] = dist
+        result.append(carpark_entry)
+
+
+    result.sort(key=lambda x: x['dist'])
+    return result

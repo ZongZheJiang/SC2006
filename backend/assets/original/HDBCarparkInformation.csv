@@ -1,4 +1,4 @@
-car_park_no,address,long,lat,car_park_type,type_of_parking_system,short_term_parking,free_parking,night_parking,car_park_decks,gantry_height,car_park_basement
+carpark_id,address,lat,lon,car_park_type,type_of_parking_system,short_term_parking,free_parking,night_parking,car_park_decks,gantry_height,car_park_basement
 ACB,BLK 270/271 ALBERT CENTRE BASEMENT CAR PARK,1.301057125,103.854118,BASEMENT CAR PARK,ELECTRONIC PARKING,WHOLE DAY,NO,YES,1,1.8,Y
 ACM,BLK 98A ALJUNIED CRESCENT,1.320998049,103.8850609,MULTI-STOREY CAR PARK,ELECTRONIC PARKING,WHOLE DAY,SUN & PH FR 7AM-10.30PM,YES,5,2.1,N
 AH1,BLK 101 JALAN DUSUN,1.328277219,103.8446199,SURFACE CAR PARK,ELECTRONIC PARKING,WHOLE DAY,SUN & PH FR 7AM-10.30PM,YES,0,0,N

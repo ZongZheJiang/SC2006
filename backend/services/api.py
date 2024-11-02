@@ -8,6 +8,41 @@ urllib3.disable_warnings()
 import json
 import database as db
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+HDB_URL=os.getenv("HDB_LOTS_URL")
+LTA_URL=os.getenv("LTA_LOTS_URL")
+ACCESS_KEY=os.getenv("LTA_ACCESS_KEY")
+
+def retrieve_HDB_lots():
+    try:
+        response = requests.get(HDB_URL)
+        response.raise_for_status()
+        data = response.json()
+        return data["items"][0]['carpark_data'] #dictionary
+    except requests.exceptions.RequestException as e:
+        return None
+
+def retrieve_LTA_lots():
+    headers = {
+        'AccountKey': ACCESS_KEY,
+        'Accept': 'application/json'
+    }
+    try:
+        response = requests.get(
+            LTA_URL,
+            headers=headers
+        )
+        return [data for data in response.json()['value'] if data['Agency']!="HDB"] # dictionary
+    except requests.exceptions.RequestException as e:
+        return None
+
+
+
+
+
 
 #global variables
 URA_ACCESS_KEY = '2401e0c5-f31d-4434-8261-3db6c18ffcdc'
@@ -55,7 +90,7 @@ def get_token():
     except requests.exceptions.RequestException as e:
         print(f"Request failed: {e}")
         return None
-    
+
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
@@ -64,7 +99,7 @@ def hello_world():
 def get_carpark_nameToNumber():
     carpark_nameToNumber = {}
     csv_file = 'HDBCarparkInformation.csv'
-    
+
     with open(csv_file, mode='r') as file:
         # Create a CSV reader that returns rows as dictionaries
         reader = csv.DictReader(file)
@@ -82,7 +117,7 @@ def get_carpark_nameToNumber():
 def get_carpark_nameToLongLat():
     carpark_nameToLongLat = {}
     csv_file = 'HDBCarparkInformation.csv'
-    
+
     with open(csv_file, mode='r') as file:
         # Create a CSV reader that returns rows as dictionaries
         reader = csv.DictReader(file)
@@ -101,7 +136,7 @@ def get_carpark_nameToLongLat():
 def get_carpark_availability():
     # API endpoint
     url = "https://api.data.gov.sg/v1/transport/carpark-availability"
-    
+
     try:
         # Sending GET request to the API
         response = requests.get(url)
@@ -113,7 +148,7 @@ def get_carpark_availability():
         return jsonify(data)
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
-    
+
 
 @app.route('/ura-carpark-availability')
 def get_ura_carpark_availability():
@@ -198,7 +233,7 @@ def get_carpark_rates():
 
     except requests.exceptions.RequestException as e:
         return jsonify({'error': f'Request failed: {str(e)}'}), 500
-    
+
 
 @app.route("/user", methods = ["GET"])
 def get_user():
@@ -212,23 +247,23 @@ def get_bookmarks():
     uid = request.args.get("uid")
     resp = db.retrieve_bookmarks(uid)
     return jsonify(resp), 200 # Returns list of locations
-    
+
 @app.route("/bookmarks/add", methods=["POST"])
 def add_bookmarks():
     data = request.get_json()
-    
+
     db.insert_bookmark(data.get("uid"), data.get("location"), data.get("coordinates"))
-    
+
     # Return a created response
     return jsonify({"message": "Bookmark created successfully"}), 201  # Created
 
-    
+
 @app.route("/bookmarks/delete", methods=["POST"])
 def remove_bookmarks():
     data = request.get_json()
-    
+
     db.delete_bookmark(data.get("uid"), data.get("location"))
-    
+
     # Return a removed response
     return jsonify({"message": "Bookmark removed successfully"}), 200  # Removed
 
