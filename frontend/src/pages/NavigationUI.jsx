@@ -250,9 +250,9 @@ function Navigation() {
                   // },
                   textAlign: "center",
                   py: 1.8,
-                  mx: 0.8,
+                  mx: "-1%",
                   mb: 1,
-                  width: 360,
+                  width: "91%",
                   borderRadius: 3,
                 }}
                 onClick={handleShowToggle}
