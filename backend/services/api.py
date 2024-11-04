@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS, cross_origin
 import requests
 import csv
@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import urllib3
 urllib3.disable_warnings()
 import json
-import database as db
+import services.database as db
 
 import os
 from dotenv import load_dotenv
@@ -237,9 +237,13 @@ def get_carpark_rates():
 
 @app.route("/user", methods = ["GET"])
 def get_user():
-    uid = request.args.get("uid")
-    if uid == None:
-        resp = db.create_user()
+    resp = db.create_user()
+    return jsonify(resp), 200
+
+@app.route("/user/<uid>", methods = ["GET"])
+def check_user(uid):
+    inp = uid if uid else requests.args.get("uid")
+    resp = db.check_user(inp)
     return jsonify(resp), 200
 
 @app.route("/bookmarks", methods=["GET"])
@@ -266,6 +270,15 @@ def remove_bookmarks():
 
     # Return a removed response
     return jsonify({"message": "Bookmark removed successfully"}), 200  # Removed
+
+@app.route("/carpark", methods=["GET"])
+def get_carparks():
+    carpark_data = db.retrieve_carparks()
+    if carpark_data:
+        return jsonify(carpark_data), 200
+    else:
+        # Return a 404 Not Found or a 500 Internal Server Error based on the situation
+        return make_response(jsonify({"error": "No carpark data found or an error occurred"}), 404)
 
 if __name__ == "__main__":
     app.run(debug=True)
