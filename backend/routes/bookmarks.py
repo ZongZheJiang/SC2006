@@ -1,14 +1,18 @@
 from flask import Blueprint, jsonify, request
+import requests
 from services import database as db
 
 bookmarks_bp = Blueprint('bookmarks', __name__)
 
-@bookmarks_bp.route("/user", methods=["GET"])
+@bookmarks_bp.route("/user", methods = ["GET"])
 def get_user():
-    uid = request.args.get("uid")
-    resp = None
-    if uid == None:
-        resp = db.create_user()
+    resp = db.create_user()
+    return jsonify(resp), 200
+
+@bookmarks_bp.route("/user/<uid>", methods = ["GET"])
+def check_user(uid):
+    inp = uid if uid else requests.args.get("uid")
+    resp = db.check_user(inp)
     return jsonify(resp), 200
 
 @bookmarks_bp.route("/bookmarks", methods=["GET"])

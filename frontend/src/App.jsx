@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
@@ -11,32 +11,59 @@ import Bookmarks from "./pages/BookmarkUI.jsx";
 import "./index.css";
 
 function App() {
-  const [cookies, setCookie] = useCookies(["user"]);
+  const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const backend_url = "http://127.0.0.1:5000";
-  useEffect(() => {
-    let fetchData = async () => {
-      try {
-        await axios
-          .get(backend_url + "/user")
-          .then((res) => {
-            console.log("uid");
+  const fetchCalled = useRef(false);
+  let registerUID = async () => {
+    try {
+      await axios
+        .get(backend_url + "/user")
+        .then((res) => {
+          console.log("uid");
+          console.log(res.data);
+          setCookie("user", res.data, {
+            path: "/",
+            maxAge: 3155760000,
+            sameSite: "Lax",
+            secure: false,
+          }); // 100 years
+        })
+        .catch((err) => console.error(err));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  let checkUID = async (uid) => {
+    try {
+      await axios
+        .get(backend_url + "/user/"+uid)
+        .then((res) => {
+          if (!res.data) {
             console.log(res.data);
-            setCookie("user", res.data, {
-              path: "/",
-              maxAge: 3155760000,
-              sameSite: "Lax",
-              secure: false,
-            }); // 100 years
-          })
-          .catch((err) => console.error(err));
-      } catch (error) {
-        console.error("Error fetching data:", error);
+            removeCookie("user", { path: "/" });
+            registerUID();
+          }
+        })
+        .catch((err) => console.error(err));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (fetchCalled.current) return;  // Prevent second call
+    fetchCalled.current = true;
+    const initialize = async () => {
+      if (!cookies.user) {
+        await registerUID();
+      } else {
+        await checkUID(cookies.user);
       }
     };
-    if (!cookies.user) {
-      fetchData();
-    }
-  }, [cookies.user, setCookie]);
+
+    initialize();
+  },[]);
   return (
     <div className="ios">
       <Router>
