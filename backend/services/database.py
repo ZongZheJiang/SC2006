@@ -184,7 +184,8 @@ def main():
         'price': 'price',
         'price_weekend': 'price_weekend'
     }
-    csv_file_path = './assets/updated/CarparkInformation_new.csv' 
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    csv_file_path = os.path.join(base_path, 'assets', 'updated', 'CarparkInformation_new.csv')
     data = []
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
