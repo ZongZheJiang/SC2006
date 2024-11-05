@@ -17,7 +17,7 @@ const TopBar = () => (
     </Link>
     <h1>Navigation</h1>
     <Link
-      to="/settings"
+      to="/sort"
       className="icon-link"
       style={{
         position: "absolute",

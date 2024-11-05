@@ -8,6 +8,7 @@ import Navigation from "./pages/NavigationUI.jsx";
 import LandingPage from "./pages/LandingPageUI.jsx";
 import Settings from "./pages/SettingsUI.jsx";
 import Bookmarks from "./pages/BookmarkUI.jsx";
+import Sort from "./pages/SortUI.jsx";
 import "./index.css";
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
   let checkUID = async (uid) => {
     try {
       await axios
-        .get(backend_url + "/user/"+uid)
+        .get(backend_url + "/user/" + uid)
         .then((res) => {
           if (!res.data) {
             console.log(res.data);
@@ -52,7 +53,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (fetchCalled.current) return;  // Prevent second call
+    if (fetchCalled.current) return; // Prevent second call
     fetchCalled.current = true;
     const initialize = async () => {
       if (!cookies.user) {
@@ -63,7 +64,7 @@ function App() {
     };
 
     initialize();
-  },[]);
+  }, []);
   return (
     <div className="ios">
       <Router>
@@ -73,6 +74,7 @@ function App() {
             <Route path="/navigation" element={<Navigation />} />
             <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/sort" element={<Sort />} />
             <Route
               path="/home"
               element={

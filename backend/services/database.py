@@ -71,6 +71,24 @@ def check_user(uid):
 #---
 # Carpark
 
+def populate_carparks(data):
+    try:
+        con = open_connection(db_name)
+        cur = con.cursor()
+        cur.executemany('''
+                        INSERT OR IGNORE INTO carpark (agency, id, address, lat, long, price, price_weekend)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        ''', data)
+        con.commit()
+        print("Populated carpark table")
+    except sqlite3.Error as e:
+        print(f"An error occurred while updating carparks: {e}")
+    finally:
+        if cur:
+            cur.close()
+        if con:
+            close_connection(con)
+
 def retrieve_carparks():
     try:
         con = open_connection(db_name)
@@ -79,7 +97,7 @@ def retrieve_carparks():
         carpark_dict = {
             row[1]: {
                 "agency": row[0],
-                "id": row[1],
+                "carpark_id": row[1],
                 "address": row[2],
                 "lat": row[3],
                 "long": row[4],
@@ -88,7 +106,7 @@ def retrieve_carparks():
             }
             for row in res
         }
-        
+
         return carpark_dict
     except sqlite3.Error as e:
         print(f"An error occurred while retrieving carparks: {e}")
@@ -99,23 +117,6 @@ def retrieve_carparks():
         if con:
             close_connection(con)
 
-def _update_carparks(data):
-    try:
-        con = open_connection(db_name)
-        cur = con.cursor()
-        cur.executemany('''
-                        INSERT OR IGNORE INTO carpark (agency, id, address, lat, long, price, price_weekend)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                        ''', data)
-        con.commit()
-        print("Updated carpark table")
-    except sqlite3.Error as e:
-        print(f"An error occurred while updating carparks: {e}")
-    finally:
-        if cur:
-            cur.close()
-        if con:
-            close_connection(con)
 
 #---
 # Create/test db
@@ -141,7 +142,7 @@ def create_db():
     cur.execute("""
                 CREATE TABLE IF NOT EXISTS carpark (
                 agency VARCHAR(10) NOT NULL,
-                id VARCHAR(20) NOT NULL PRIMARY KEY,
+                carpark_id VARCHAR(20) NOT NULL PRIMARY KEY,
                 ADDRESS VARCHAR(100) NOT NULL,
                 lat VARCHAR(100) NOT NULL,
                 long VARCHAR(100) NOT NULL,
@@ -149,7 +150,7 @@ def create_db():
                 price_weekend VARCHAR(100) NOT NULL
                 );
                 """)
-    
+
     # cur.execute("INSERT INTO user (user_id) VALUES ('123456789');")
     # cur.execute("INSERT INTO bookmark (user_id, location) VALUES ('1','testing')")
     # con.commit()
@@ -177,15 +178,15 @@ def main():
     desired_headers = ['agency', 'carpark_id', 'address', 'lat', 'long', 'price', 'price_weekend']
     header_mapping = {
         'agency': 'agency',
-        'carpark_id': 'id',
+        'carpark_id': 'carpark_id',
         'address': 'address',
         'lat': 'lat',
         'long': 'long',
         'price': 'price',
         'price_weekend': 'price_weekend'
     }
-    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    csv_file_path = os.path.join(base_path, 'assets', 'updated', 'CarparkInformation_new.csv')
+
+    csv_file_path = './assets/CarparkInformation.csv'
     data = []
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
@@ -193,9 +194,9 @@ def main():
             selected_row = {header_mapping[key]: row[key] for key in desired_headers if key in row}
             data.append(tuple(selected_row.values()))
 
-        _update_carparks(data)
+        populate_carparks(data)
 
-    
+
 
 
 #---

@@ -15,7 +15,7 @@ function LandingPage() {
     }, 2000);
 
     const navigationTimer = setTimeout(() => {
-      navigate("/settings");
+      navigate("/navigation");
     }, 2500);
 
     return () => {
