@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import Lottie from "lottie-react";
-import loadingAnimation from "./animations/loadingAnimation.json";
+import loadingAnimation from "./animations/carAnimation.json";
 import { useNavigate } from "react-router-dom";
 import "./style.css";
 
@@ -12,11 +12,11 @@ function LandingPage() {
   useEffect(() => {
     const fadeOutTimer = setTimeout(() => {
       setOpacity(0);
-    }, 2000);
+    }, 1200);
 
     const navigationTimer = setTimeout(() => {
       navigate("/navigation");
-    }, 2500);
+    }, 1600);
 
     return () => {
       isMounted.current = false;

@@ -38,7 +38,9 @@ function App() {
   let checkUID = async (uid) => {
     try {
       await axios
-        .get(backend_url + "/user/" + uid)
+        .get(backend_url + "/user", {
+          params: { uid: uid },
+        })
         .then((res) => {
           if (!res.data) {
             console.log(res.data);
@@ -53,7 +55,7 @@ function App() {
   };
 
   useEffect(() => {
-    if (fetchCalled.current) return; // Prevent second call
+    if (fetchCalled.current) return;
     fetchCalled.current = true;
     const initialize = async () => {
       if (!cookies.user) {

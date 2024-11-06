@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { IconButton, ButtonGroup, Button, Switch } from "@mui/material";
+import {
+  IconButton,
+  ButtonGroup,
+  Button,
+  Switch,
+  Typography,
+  Slider,
+} from "@mui/material";
 import { IoIosArrowBack } from "react-icons/io";
 import "./style.css";
 
-import { FaCar } from "react-icons/fa";
+import { FaCar, FaBuilding, FaCarSide } from "react-icons/fa";
 import { FaMotorcycle } from "react-icons/fa6";
 
-import { motion } from "framer-motion";
-
 const backend_url = process.env.REACT_APP_BACKEND_URL;
+function valueLabelFormat(value) {
+  return `${value} meters`;
+}
 
 function Settings() {
   const [selectedOption, setSelectedOption] = useState(() => {
@@ -21,7 +29,7 @@ function Settings() {
   const [vehicleType, setVehicleType] = useState(() => {
     return localStorage.getItem("vehicleType") || "car";
   });
-
+  const [distance, setDistance] = useState(100);
   const sortDescriptions = {
     location:
       "The default search option, perfect for when you need to park quickly or prefer minimal walking distance.",
@@ -99,6 +107,14 @@ function Settings() {
     }
   }, []);
 
+  const handleChange = (event, newValue) => {
+    setDistance(newValue);
+  };
+
+  const calculateIconPosition = (value, min, max) => {
+    return ((value - min) / (max - min)) * 100;
+  };
+
   return (
     <div className="page" style={{ background: "#fAfAfA" }}>
       <div
@@ -156,7 +172,7 @@ function Settings() {
       </div>
 
       <div className="setting-box">
-        <h3> Customise your search options</h3>
+        <h3> Customise your search priority</h3>
 
         <div className="button-group">
           <ButtonGroup variant="outlined" aria-label="Basic button group">
@@ -224,6 +240,51 @@ function Settings() {
               ? "Highlight EV Charging Stations"
               : "Regular Parking Spaces Only"}
           </span>
+        </div>
+      </div>
+
+      <div className="setting-box">
+        <Typography id="linear-slider" gutterBottom>
+          Maximum parking distance: {distance} meters
+        </Typography>
+        <br />
+        <br />
+        <div style={{ position: "relative", padding: "20px 0" }}>
+          {/* Car Icon */}
+          <div
+            style={{
+              position: "absolute",
+              left: "0%",
+              transform: "translateX(-50%)",
+              top: "-10px",
+              zIndex: 1,
+            }}
+          >
+            <FaBuilding size={30} color={"#a1a1a1"} />
+          </div>
+          {/* Building Icon */}
+          <div
+            style={{
+              position: "absolute",
+              left: `${calculateIconPosition(distance, 100, 2000)}%`,
+              transform: "translateX(-50%)",
+              top: "-10px",
+              zIndex: 1,
+            }}
+          >
+            <FaCarSide size={30} color={"#a1a1a1"} />
+          </div>
+          <br /> <br />
+          <Slider
+            value={distance}
+            min={100}
+            step={1}
+            max={2000}
+            onChange={handleChange}
+            valueLabelFormat={valueLabelFormat}
+            valueLabelDisplay="auto"
+            aria-labelledby="linear-slider"
+          />
         </div>
       </div>
     </div>
