@@ -223,3 +223,40 @@
     background-color: #1976d2 !important;
     color: white !important;
 }
+
+.setting-box {
+    background-color: white;
+    height: 200px;
+    width: 100%;
+    padding: 20px;
+    border-bottom: 3px solid #f1f1f1;
+}
+.settings-icon-box {
+    display: flex;
+}
+.settings-icon-circle {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: #c1c1c1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.settings-icon-circle:hover {
+    transform: scale(1.05);
+    background-color: #1976d2;
+}
+
+.settings-icon-circle:active {
+    transform: scale(0.95);
+}
+
+.selected-vehicle {
+    background-color: #1976d2;
+    box-shadow: 0 0 10px rgba(25, 118, 210, 0.3);
+}

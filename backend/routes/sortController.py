@@ -6,10 +6,11 @@ veh_type = "car"
 sort_type = "location"
 max_radius = 500
 max_results = 10
+show_ev =False
 
 @sort_option_bp.route("/sort")
 def sort():
-    global sort_type, max_radius, max_results, veh_type
+    global sort_type, max_radius, max_results, veh_type, show_ev
 
     new_sort_type = request.args.get("sort_type", default=sort_type)
     if new_sort_type != sort_type:
@@ -26,14 +27,20 @@ def sort():
         print("Setting max results to: ", new_max_results)
         max_results = new_max_results
 
-    new_veh_type = request.args.get("vehicle_type", default=veh_type)
+    new_veh_type = request.args.get("veh_type", default=veh_type)
     if new_veh_type != veh_type:
         print("Setting vehicle type to: ", new_veh_type)
         veh_type = new_veh_type
+
+    new_show_ev = request.args.get("show_ev", default=show_ev)
+    if new_show_ev != show_ev:
+        print("Setting ev-option type to: ", new_veh_type)
+        show_ev = new_show_ev
 
     return jsonify({
         "sort_type": sort_type,
         "max_radius": max_radius,
         "max_results": max_results,
-        "vehicle_type": veh_type
+        "veh_type": veh_type,
+        "show_ev": show_ev
     })

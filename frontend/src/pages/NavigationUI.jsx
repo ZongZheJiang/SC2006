@@ -12,6 +12,8 @@ import CarparkCard from "../components/CarparkCard";
 import CarparkHeader from "../components/CarparkHeader";
 import TopBar from "../components/Topbar";
 
+import { motion } from "framer-motion";
+
 const backend_url = process.env.REACT_APP_BACKEND_URL;
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
@@ -208,8 +210,30 @@ function Navigation() {
 
   return (
     <div className="page">
-      <TopBar />
-      <div className="mapContainer" ref={mapContainer} />
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{
+          duration: 0.5,
+          type: "spring",
+          stiffness: 120,
+          damping: 20,
+        }}
+      >
+        <TopBar />
+      </motion.div>
+
+      <motion.div
+        className="mapContainer"
+        ref={mapContainer}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.5,
+          delay: 0.2,
+          ease: "easeOut",
+        }}
+      />
 
       {carparkData && carparkData.data && (
         <div className={`carpark-popup ${!isExpanded ? "collapsed" : ""}`}>
