@@ -73,9 +73,13 @@ function Navigation() {
         .setLngLat([lon, lat])
         .setPopup(
           new mapboxgl.Popup().setHTML(`
-          <h3>${carpark.location}</h3>
-          <p>Available lots: ${carpark.lots_available}/${carpark.total_lots}</p>
-        `),
+          <h3>${carpark.address}</h3>
+          ${
+            carpark.lots_available && carpark.total_lots
+              ? `<p>Available lots: ${carpark.lots_available}/${carpark.total_lots}</p>`
+              : ""
+          }
+          `),
         )
         .addTo(map.current);
 
@@ -242,12 +246,6 @@ function Navigation() {
                 sx={{
                   cursor: "pointer",
                   backgroundColor: "#1565c0",
-                  // border: "2px solid #1976d2",
-                  // "&:hover": {
-                  //   backgroundColor: "#f5f9ff",
-                  //   borderColor: "#1565c0",
-                  //   color: "#1565c0",
-                  // },
                   textAlign: "center",
                   py: 1.8,
                   mx: "-1%",
