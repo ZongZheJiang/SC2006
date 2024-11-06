@@ -4,5 +4,4 @@ flask-cors
 python-dotenv
 psutil
 
-redis
 groq
