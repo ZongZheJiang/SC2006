@@ -26,7 +26,6 @@ def get_carparks():
 @findcarpark_bp.route('/find')
 @measure_time
 def carparkfinder():
-    # carpark_data = get_carpark_data(redis_instance)
     carpark_data=requests.get(BACKEND_URL + "carpark").json()
     lat = request.args.get('lat', type=float)
     lon = request.args.get('lon', type=float)
