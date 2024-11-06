@@ -18,12 +18,31 @@ def close_connection(con: sqlite3.Connection):
 # Bookmark
 
 def insert_bookmark(uid: str, loc: str, coords: str):
-    con = open_connection(db_name)
-    cur = con.cursor()
-    cur.execute("INSERT INTO bookmark (user_id, location, lat, long) VALUES ((SELECT id FROM user WHERE user_id = ?), ?, ?, ?);", (uid, loc, coords[0], coords[1]))
-    con.commit()
-    cur.close()
-    close_connection(con)
+    try:
+    # Open database connection
+    
+        con = open_connection(db_name)
+        cur = con.cursor()
+        cur.execute("INSERT INTO bookmark (user_id, location, lat, long) VALUES ((SELECT id FROM user WHERE user_id = ?), ?, ?, ?);", (uid, loc, coords[0], coords[1]))
+        con.commit()
+
+    except sqlite3.IntegrityError as e:
+        # Handle cases like foreign key constraint failure or unique constraint violation
+        print("IntegrityError:", e)
+        return False
+    except sqlite3.OperationalError as e:
+        # Handle operational errors, e.g., issues with the database connection or SQL syntax errors
+        print("OperationalError:", e)
+    except Exception as e:
+            # General exception handler for unexpected errors
+            print("An error occurred:", e)
+
+    finally:
+        # Ensure resources are properly closed
+        if cur:
+            cur.close()
+        if con:
+            close_connection(con)
 
 def delete_bookmark(uid: str, loc: str):
     con = open_connection(db_name)
@@ -76,7 +95,7 @@ def populate_carparks(data):
         con = open_connection(db_name)
         cur = con.cursor()
         cur.executemany('''
-                        INSERT OR IGNORE INTO carpark (agency, id, address, lat, long, price, price_weekend)
+                        INSERT OR IGNORE INTO carpark (agency, carpark_id, address, lat, long, price, price_weekend)
                         VALUES (?, ?, ?, ?, ?, ?, ?)
                         ''', data)
         con.commit()
@@ -130,7 +149,8 @@ def create_db():
                 location VARCHAR(255) NOT NULL,
                 lat VARCHAR(100) NOT NULL,
                 long VARCHAR(100) NOT NULL,
-                FOREIGN KEY (user_id) REFERENCES user(id)
+                FOREIGN KEY (user_id) REFERENCES user(id),
+                UNIQUE (user_id, location)
                 );
                 """)
     cur.execute("""
@@ -176,25 +196,16 @@ def main():
         print("DB create OK")
 
     desired_headers = ['agency', 'carpark_id', 'address', 'lat', 'long', 'price', 'price_weekend']
-    header_mapping = {
-        'agency': 'agency',
-        'carpark_id': 'carpark_id',
-        'address': 'address',
-        'lat': 'lat',
-        'long': 'long',
-        'price': 'price',
-        'price_weekend': 'price_weekend'
-    }
 
     csv_file_path = './assets/CarparkInformation.csv'
     data = []
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            selected_row = {header_mapping[key]: row[key] for key in desired_headers if key in row}
+            selected_row = {key: row[key] for key in desired_headers if key in row}
             data.append(tuple(selected_row.values()))
 
-        populate_carparks(data)
+    populate_carparks(data)
 
 
 

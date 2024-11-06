@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+import requests
 from services import database as db
 
 bookmarks_bp = Blueprint('bookmarks', __name__)
@@ -11,6 +12,12 @@ def get_user():
         resp = db.create_user()
     return jsonify(resp), 200
 
+@bookmarks_bp.route("/user/<uid>", methods = ["GET"])
+def check_user(uid):
+    inp = uid if uid else requests.args.get("uid")
+    resp = db.check_user(inp)
+    return jsonify(resp), 200
+
 @bookmarks_bp.route("/bookmarks", methods=["GET"])
 def get_bookmarks():
     uid = request.args.get("uid")
@@ -20,9 +27,18 @@ def get_bookmarks():
 @bookmarks_bp.route("/bookmarks/add", methods=["POST"])
 def add_bookmarks():
     data = request.get_json()
-    db.insert_bookmark(data.get("uid"), data.get("location"), data.get("coordinates"))
-    return jsonify({"message": "Bookmark created successfully"}), 201
-
+    print(data)
+    resp = db.insert_bookmark(data.get("uid"), data.get("location"), data.get("coordinates"))
+    if resp is None:
+        # Successful insertion
+        return jsonify({"message": "Bookmark created successfully"}), 201
+    elif resp is False:
+        # Duplicate entry detected
+        return jsonify({"message": "Duplicate bookmark"}), 409
+    else:
+        # Unexpected error (optional)
+        return jsonify({"message": "An unexpected error occurred"}), 500
+    
 @bookmarks_bp.route("/bookmarks/delete", methods=["POST"])
 def remove_bookmarks():
     data = request.get_json()

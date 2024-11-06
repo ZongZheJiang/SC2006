@@ -75,22 +75,25 @@ const Bookmarks = () => {
 
     try {
       console.log(selectedLocation);
-      await axios.post(backend_url + "/bookmarks/add", {
+      let resp = await axios.post(backend_url + "/bookmarks/add", {
         uid: uid,
         location: selectedLocation.name,
         coordinates: selectedLocation.coordinates,
       });
-      setBookmarks((prevBookmarks) => [
-        ...prevBookmarks,
-        [
-          selectedLocation.name,
-          selectedLocation.coordinates[0],
-          selectedLocation.coordinates[1],
-        ],
-      ]);
-      setSelectedLocation(null);
+      console.log(resp)
+        setBookmarks((prevBookmarks) => [
+          ...prevBookmarks,
+          [
+            selectedLocation.name,
+            selectedLocation.coordinates[0],
+            selectedLocation.coordinates[1],
+          ],
+        ]);
     } catch (error) {
       console.error("Error adding bookmark:", error);
+      console.log(error.response);
+    } finally {
+      setSelectedLocation(null);
     }
   };
 

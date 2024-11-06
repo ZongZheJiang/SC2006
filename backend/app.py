@@ -4,7 +4,6 @@ from services import database as db
 from routes.bookmarksController import bookmarks_bp
 from routes.findcarparkController import findcarpark_bp
 from routes.sortController import sort_option_bp
-from routes.carpark import carpark_bp
 
 import requests
 import os
