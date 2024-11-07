@@ -75,6 +75,7 @@ def create_user():
             break
     cur.close()
     close_connection(con)
+    print(number)
     return number
 
 def check_user(uid):

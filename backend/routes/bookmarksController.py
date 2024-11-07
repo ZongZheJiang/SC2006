@@ -10,13 +10,18 @@ def get_user():
     resp = None
     if uid == None:
         resp = db.create_user()
+    print("/user",resp)
     return jsonify(resp), 200
 
-@bookmarks_bp.route("/user/<uid>", methods = ["GET"])
-def check_user(uid):
-    inp = uid if uid else requests.args.get("uid")
+@bookmarks_bp.route("/checkuser", methods = ["GET"])
+def check_user():
+    inp = request.args.get("uid")
     resp = db.check_user(inp)
-    return jsonify(resp), 200
+    print("/user/<uid>",resp)
+    if resp:
+        return jsonify(resp), 200
+    else:
+        return jsonify(resp), 404
 
 @bookmarks_bp.route("/bookmarks", methods=["GET"])
 def get_bookmarks():

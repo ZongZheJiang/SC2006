@@ -38,19 +38,16 @@ function App() {
   let checkUID = async (uid) => {
     try {
       await axios
-        .get(backend_url + "/user", {
+        .get(backend_url + "/checkuser", {
           params: { uid: uid },
         })
         .then((res) => {
-          if (!res.data) {
-            console.log(res.data);
-            removeCookie("user", { path: "/" });
-            registerUID();
-          }
+          console.log(res);
         })
-        .catch((err) => console.error(err));
     } catch (error) {
       console.error("Error fetching data:", error);
+      removeCookie("user", { path: "/" });
+      registerUID();
     }
   };
 
