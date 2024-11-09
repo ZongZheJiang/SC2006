@@ -1,10 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import PlaceIcon from "@mui/icons-material/Place";
+import { MdOutlineBookmarkBorder, MdOutlineBookmark } from "react-icons/md";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 
 const CarparkCard = ({ carpark, onSelect }) => {
   const [showFullPrice, setShowFullPrice] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [cookies] = useCookies(["user"]);
+  const uid = cookies.user;
+  const backend_url = process.env.REACT_APP_BACKEND_URL;
 
   const formatPrice = (priceString) => {
     if (!priceString) return { short: "", full: "" };
@@ -16,6 +23,49 @@ const CarparkCard = ({ carpark, onSelect }) => {
       short: priceString.substring(0, firstSpaceIndex),
       full: priceString,
     };
+  };
+
+  const checkIfBookmarked = async () => {
+    try {
+      const response = await axios.get(`${backend_url}/bookmarks`, {
+        params: { uid: uid },
+      });
+      const isLocationBookmarked = response.data.some(
+        (bookmark) => bookmark[0] === carpark.address || bookmark[0] === carpark.location
+      );
+      setIsBookmarked(isLocationBookmarked);
+    } catch (error) {
+      console.error("Error checking bookmark status:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkIfBookmarked();
+  }, [carpark]);
+
+  const handleBookmarkToggle = async (e) => {
+    e.stopPropagation();
+    try {
+      const locationName = carpark.address || carpark.location;
+      if (isBookmarked) {
+        // Delete bookmark
+        await axios.post(`${backend_url}/bookmarks/delete`, {
+          location: locationName,
+          uid: uid,
+        });
+        setIsBookmarked(false);
+      } else {
+        // Add bookmark
+        await axios.post(`${backend_url}/bookmarks/add`, {
+          uid: uid,
+          location: locationName,
+          coordinates: [parseFloat(carpark.long), parseFloat(carpark.lat)],
+        });
+        setIsBookmarked(true);
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+    }
   };
 
   const { short: shortPrice, full: fullPrice } = formatPrice(carpark.price);
@@ -49,9 +99,23 @@ const CarparkCard = ({ carpark, onSelect }) => {
           >
             {carpark.address || carpark.location}
           </Typography>
-          <IconButton size="small" color="primary">
-            <PlaceIcon />
-          </IconButton>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <IconButton 
+              size="small" 
+              onClick={handleBookmarkToggle}
+              sx={{ 
+                color: isBookmarked ? "#1976d2" : "inherit",
+                "&:hover": {
+                  backgroundColor: "rgba(25, 118, 210, 0.04)",
+                },
+              }}
+            >
+              {isBookmarked ? <MdOutlineBookmark /> : <MdOutlineBookmarkBorder />}
+            </IconButton>
+            <IconButton size="small" color="primary">
+              <PlaceIcon />
+            </IconButton>
+          </Box>
         </Box>
 
         <Box
@@ -65,7 +129,6 @@ const CarparkCard = ({ carpark, onSelect }) => {
           <Typography variant="body2">
             {Math.round(carpark.dist)}m away
           </Typography>
-          {/* First case: When all lot information exists */}
           {carpark.lot_type &&
             carpark.lots_available != null &&
             carpark.total_lots != null && (
@@ -77,7 +140,6 @@ const CarparkCard = ({ carpark, onSelect }) => {
               </Box>
             )}
 
-          {/* Second case: When only lots_available exists */}
           {carpark.lot_type &&
             carpark.lots_available != null &&
             !carpark.total_lots && (
@@ -93,16 +155,15 @@ const CarparkCard = ({ carpark, onSelect }) => {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column", // Changed to column for vertical stacking
+            flexDirection: "column",
             alignItems: "flex-start",
             mt: 1,
-            gap: 0.5, // Reduced gap for vertical spacing
+            gap: 0.5,
           }}
         >
           {carpark.price ? (
             <>
               {fullPrice === shortPrice ? (
-                // If no whitespace, show full price
                 <Typography
                   variant="body2"
                   color="primary"
@@ -113,7 +174,6 @@ const CarparkCard = ({ carpark, onSelect }) => {
                   {fullPrice}
                 </Typography>
               ) : (
-                // If has whitespace, show either button or full price + hide button
                 <>
                   {showFullPrice ? (
                     <>
