@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
@@ -18,15 +19,18 @@ const backend_url = process.env.REACT_APP_BACKEND_URL;
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
 function Navigation() {
+  let { state } = useLocation();
+
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [route, setRoute] = useState(null);
   const [startPoint, setStartPoint] = useState(null);
-  const [endPoint, setEndPoint] = useState(null);
+  const [endPoint, setEndPoint] = useState(state?.coordinates || null);
   const [carparkData, setCarparkData] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [visibleResults, setVisibleResults] = useState(3); // Changed to 3
+
 
   const findCarparks = async (lat, long) => {
     try {

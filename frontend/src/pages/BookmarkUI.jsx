@@ -16,6 +16,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { DeleteOutline } from "@mui/icons-material";
+import { IoNavigate } from "react-icons/io5";
 import "./style.css";
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -177,6 +178,12 @@ const Bookmarks = () => {
           <React.Fragment key={index}>
             <ListItem button className="bookmark-box">
               <ListItemText primary={bookmark[0]} />
+              <Link
+                to="/navigation"
+                state= {{ coordinates: [bookmark[1], bookmark[2]] }}
+              >
+                <IoNavigate />
+              </Link>
               <IconButton
                 edge="end"
                 onClick={() => deleteBookmark(bookmark)}
