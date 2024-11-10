@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
@@ -28,6 +28,7 @@ const Bookmarks = () => {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [cookies] = useCookies(["user"]);
   const uid = cookies.user;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (map.current) return;
@@ -129,6 +130,16 @@ const Bookmarks = () => {
     }
   };
 
+  const handleNavigate = (coordinates) => {
+    navigate("/navigation", {
+      state: { 
+        coordinates: coordinates,
+        timestamp: Date.now() // Add a timestamp to force state update
+      },
+      replace: true // Use replace to enable proper back button behavior
+    });
+  };
+
   return (
     <div className="page" style={{ background: "#fcfcfc" }}>
       <div
@@ -178,12 +189,12 @@ const Bookmarks = () => {
           <React.Fragment key={index}>
             <ListItem button className="bookmark-box">
               <ListItemText primary={bookmark[0]} />
-              <Link
-                to="/navigation"
-                state= {{ coordinates: [bookmark[1], bookmark[2]] }}
+              <IconButton
+                onClick={() => handleNavigate([bookmark[1], bookmark[2]])}
+                sx={{ color: '#1976d2' }}
               >
                 <IoNavigate />
-              </Link>
+              </IconButton>
               <IconButton
                 edge="end"
                 onClick={() => deleteBookmark(bookmark)}
