@@ -20,7 +20,7 @@ def close_connection(con: sqlite3.Connection):
 def insert_bookmark(uid: str, loc: str, coords: str):
     try:
     # Open database connection
-    
+
         con = open_connection(db_name)
         cur = con.cursor()
         cur.execute("INSERT INTO bookmark (user_id, location, lat, long) VALUES ((SELECT id FROM user WHERE user_id = ?), ?, ?, ?);", (uid, loc, coords[0], coords[1]))
@@ -96,8 +96,8 @@ def populate_carparks(data):
         con = open_connection(db_name)
         cur = con.cursor()
         cur.executemany('''
-                        INSERT OR IGNORE INTO carpark (agency, carpark_id, address, lat, long, price, price_weekend)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                        INSERT OR IGNORE INTO carpark (agency, carpark_id, address, lat, long, price, price_weekend, EV)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                         ''', data)
         con.commit()
         print("Populated carpark table")
@@ -122,7 +122,8 @@ def retrieve_carparks():
                 "lat": row[3],
                 "long": row[4],
                 "price": row[5],
-                "price_weekend": row[6]
+                "price_weekend": row[6],
+                "EV": row[7]
             }
             for row in res
         }
@@ -168,7 +169,8 @@ def create_db():
                 lat VARCHAR(100) NOT NULL,
                 long VARCHAR(100) NOT NULL,
                 price VARCHAR(100) NOT NULL,
-                price_weekend VARCHAR(100) NOT NULL
+                price_weekend VARCHAR(100) NOT NULL,
+                EV VARCHAR(10) NOT NULL
                 );
                 """)
 
@@ -196,9 +198,9 @@ def main():
     if res:
         print("DB create OK")
 
-    desired_headers = ['agency', 'carpark_id', 'address', 'lat', 'long', 'price', 'price_weekend']
+    desired_headers = ['agency', 'carpark_id', 'address', 'lat', 'long', 'price', 'price_weekend', 'EV']
 
-    csv_file_path = './assets/CarparkInformation.csv'
+    csv_file_path = './assets/CarparkInformation_final.csv'
     data = []
     with open(csv_file_path, mode='r') as file:
         reader = csv.DictReader(file)

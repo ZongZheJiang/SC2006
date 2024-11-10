@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import PlaceIcon from "@mui/icons-material/Place";
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import { MdOutlineBookmarkBorder, MdOutlineBookmark } from "react-icons/md";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -31,7 +33,8 @@ const CarparkCard = ({ carpark, onSelect }) => {
         params: { uid: uid },
       });
       const isLocationBookmarked = response.data.some(
-        (bookmark) => bookmark[0] === carpark.address || bookmark[0] === carpark.location
+        (bookmark) =>
+          bookmark[0] === carpark.address || bookmark[0] === carpark.location,
       );
       setIsBookmarked(isLocationBookmarked);
     } catch (error) {
@@ -100,17 +103,21 @@ const CarparkCard = ({ carpark, onSelect }) => {
             {carpark.address || carpark.location}
           </Typography>
           <Box sx={{ display: "flex", gap: 1 }}>
-            <IconButton 
-              size="small" 
+            <IconButton
+              size="small"
               onClick={handleBookmarkToggle}
-              sx={{ 
+              sx={{
                 color: isBookmarked ? "#1976d2" : "inherit",
                 "&:hover": {
                   backgroundColor: "rgba(25, 118, 210, 0.04)",
                 },
               }}
             >
-              {isBookmarked ? <MdOutlineBookmark /> : <MdOutlineBookmarkBorder />}
+              {isBookmarked ? (
+                <MdOutlineBookmark />
+              ) : (
+                <MdOutlineBookmarkBorder />
+              )}
             </IconButton>
             <IconButton size="small" color="primary">
               <PlaceIcon />
@@ -126,9 +133,24 @@ const CarparkCard = ({ carpark, onSelect }) => {
             color: "text.secondary",
           }}
         >
-          <Typography variant="body2">
-            {Math.round(carpark.dist)}m away
-          </Typography>
+          <Box sx={{ flexBasis: "40%" }}>
+            {" "}
+            {/* or width: '40%' */}
+            <Typography variant="body2" sx={{ ml: -8 }}>
+              {Math.round(carpark.dist)}m away
+            </Typography>
+            {carpark.EV === "1" && (
+              <Alert
+                severity="success"
+                sx={{ py: 0, minHeight: "20px", mt: 1 }}
+              >
+                <AlertTitle sx={{ margin: 0, fontSize: "0.8rem" }}>
+                  EV Parking
+                </AlertTitle>
+              </Alert>
+            )}
+          </Box>
+
           {carpark.lot_type &&
             carpark.lots_available != null &&
             carpark.total_lots != null && (

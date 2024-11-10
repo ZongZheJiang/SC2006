@@ -34,7 +34,7 @@ def sort():
 
     new_show_ev = request.args.get("show_ev", default=show_ev)
     if new_show_ev != show_ev:
-        print("Setting ev-option type to: ", new_veh_type)
+        print("Setting ev-option type to: ", show_ev)
         show_ev = new_show_ev
 
     return jsonify({

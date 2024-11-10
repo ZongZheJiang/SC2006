@@ -31,7 +31,6 @@ function Navigation() {
   const [isExpanded, setIsExpanded] = useState(true);
   const [visibleResults, setVisibleResults] = useState(3); // Changed to 3
 
-
   const findCarparks = async (lat, long) => {
     try {
       const params = {
@@ -129,7 +128,6 @@ function Navigation() {
         findCarparks(lat, lon);
       } else {
         // Otherwise trigger geolocation to show nearby carparks
-        geolocate.trigger();
       }
     });
 
@@ -138,24 +136,24 @@ function Navigation() {
       const lon = e.coords.longitude;
       const lat = e.coords.latitude;
       setStartPoint([lon, lat]);
-      
+
       // If no destination is set (not navigating from bookmarks),
       // find carparks near current location
       if (!endPoint) {
         console.log("Finding carparks near current location:", lat, lon);
         await findCarparks(lat, lon);
-        
+
         // Add a marker for current location
         const markerElement = document.createElement("div");
         markerElement.className = "marker";
         markerElement.style.backgroundColor = "#FF0000"; // Red marker for current location
-        
+
         new mapboxgl.Marker(markerElement)
           .setLngLat([lon, lat])
           .setPopup(
             new mapboxgl.Popup().setHTML(`
               <h3>Current Location</h3>
-            `)
+            `),
           )
           .addTo(map.current);
 
@@ -182,7 +180,6 @@ function Navigation() {
     });
   }, []);
 
-  
   useEffect(() => {
     const fetchRoute = async () => {
       if (!startPoint || !endPoint) return;

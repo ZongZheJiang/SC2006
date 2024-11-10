@@ -36,13 +36,20 @@ def carparkfinder():
     update_result_with_HDB_lots(res)
     update_result_with_LTA_lots(res)
 
-    sort_type= requests.get(BACKEND_URL + "sort").json()["sort_type"]
+    sort_options = requests.get(BACKEND_URL + "sort").json()
+    sort_type = sort_options["sort_type"]
+    show_ev = sort_options["show_ev"]
 
-    if sort_type=="price":
-        sort_by_price(res)
-    elif sort_type=="lots":
-        sort_by_lots(res)
+    if show_ev == "false":
+        for carpark in res:
+            carpark["EV"] = 0
+
+    if sort_type == "price":
+            sort_by_price(res)
+    elif sort_type == "lots":
+            sort_by_lots(res)
+
     return jsonify({
-         "status": "success",
-        "data": res
+            "status": "success",
+            "data": res
     })
