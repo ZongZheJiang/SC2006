@@ -8,7 +8,6 @@ import Navigation from "./pages/NavigationUI.jsx";
 import LandingPage from "./pages/LandingPageUI.jsx";
 import Settings from "./pages/SettingsUI.jsx";
 import Bookmarks from "./pages/BookmarkUI.jsx";
-import Sort from "./pages/SortUI.jsx";
 import "./index.css";
 
 function App() {
@@ -73,7 +72,7 @@ function App() {
             <Route path="/navigation" element={<Navigation />} />
             <Route path="/bookmarks" element={<Bookmarks />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/sort" element={<Sort />} />
+            <Route path="/sort" element={<Settings />} />
             <Route
               path="/home"
               element={

@@ -65,10 +65,6 @@ function Navigation() {
       setEndPoint([lon, lat]);
 
       const markerId = `carpark-marker-${carpark.location}`;
-      const existingMarker = document.getElementById(markerId);
-      if (existingMarker) {
-        existingMarker.remove();
-      }
 
       const markerElement = document.createElement("div");
       markerElement.id = markerId;
