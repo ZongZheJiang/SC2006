@@ -4,6 +4,7 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import PlaceIcon from "@mui/icons-material/Place";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import BoltIcon from "@mui/icons-material/Bolt";
 import { MdOutlineBookmarkBorder, MdOutlineBookmark } from "react-icons/md";
 import axios from "axios";
 import { useCookies } from "react-cookie";
@@ -142,10 +143,11 @@ const CarparkCard = ({ carpark, onSelect }) => {
             {carpark.EV === "1" && (
               <Alert
                 severity="success"
+                icon={<BoltIcon />}
                 sx={{ py: 0, minHeight: "20px", mt: 1 }}
               >
-                <AlertTitle sx={{ margin: 0, fontSize: "0.8rem" }}>
-                  EV Parking
+                <AlertTitle sx={{ margin: 0, fontSize: "0.78rem" }}>
+                  EV Charging
                 </AlertTitle>
               </Alert>
             )}

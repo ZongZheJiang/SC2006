@@ -43,7 +43,7 @@ function App() {
         })
         .then((res) => {
           console.log(res);
-        })
+        });
     } catch (error) {
       console.error("Error fetching data:", error);
       removeCookie("user", { path: "/" });

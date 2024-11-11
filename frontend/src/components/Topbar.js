@@ -15,7 +15,7 @@ const TopBar = () => (
     >
       <MdOutlineBookmarkBorder size={26} />
     </Link>
-    <h1>Navigation</h1>
+    <h1>Where to?</h1>
     <Link
       to="/sort"
       className="icon-link"

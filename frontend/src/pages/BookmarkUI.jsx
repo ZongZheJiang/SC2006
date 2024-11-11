@@ -82,15 +82,15 @@ const Bookmarks = () => {
         location: selectedLocation.name,
         coordinates: selectedLocation.coordinates,
       });
-      console.log(resp)
-        setBookmarks((prevBookmarks) => [
-          ...prevBookmarks,
-          [
-            selectedLocation.name,
-            selectedLocation.coordinates[0],
-            selectedLocation.coordinates[1],
-          ],
-        ]);
+      console.log(resp);
+      setBookmarks((prevBookmarks) => [
+        ...prevBookmarks,
+        [
+          selectedLocation.name,
+          selectedLocation.coordinates[0],
+          selectedLocation.coordinates[1],
+        ],
+      ]);
     } catch (error) {
       console.error("Error adding bookmark:", error);
       console.log(error.response);
@@ -132,11 +132,11 @@ const Bookmarks = () => {
 
   const handleNavigate = (coordinates) => {
     navigate("/navigation", {
-      state: { 
+      state: {
         coordinates: coordinates,
-        timestamp: Date.now() // Add a timestamp to force state update
+        timestamp: Date.now(), // Add a timestamp to force state update
       },
-      replace: true // Use replace to enable proper back button behavior
+      replace: true, // Use replace to enable proper back button behavior
     });
   };
 
@@ -191,7 +191,7 @@ const Bookmarks = () => {
               <ListItemText primary={bookmark[0]} />
               <IconButton
                 onClick={() => handleNavigate([bookmark[1], bookmark[2]])}
-                sx={{ color: '#1976d2' }}
+                sx={{ color: "#1976d2" }}
               >
                 <IoNavigate />
               </IconButton>
