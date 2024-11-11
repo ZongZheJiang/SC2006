@@ -38,12 +38,10 @@ const Bookmarks = () => {
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: "mapbox://styles/mapbox/streets-v11",
+      style: "mapbox://styles/mapbox/streets-v12",
       center: [103.8198, 1.3521],
       zoom: 11,
     });
-
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: {
@@ -51,18 +49,21 @@ const Bookmarks = () => {
       },
       trackUserLocation: true,
     });
-    map.current.addControl(geolocate);
-
-    map.current.on("load", () => {
-      geolocate.trigger();
-    });
 
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       placeholder: "Enter destination",
+      className: "custom-geocoder",
     });
+
     map.current.addControl(geocoder);
+    map.current.addControl(geolocate);
+    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+
+    map.current.on("load", () => {
+      geolocate.trigger();
+    });
 
     geocoder.on("result", (e) => {
       setSelectedLocation({

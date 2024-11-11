@@ -109,69 +109,51 @@ function Navigation() {
       zoom: 11,
     });
 
-    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
-
     const geolocate = new mapboxgl.GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true,
       },
       trackUserLocation: true,
     });
-    map.current.addControl(geolocate);
-
-    // Handle map load
-    map.current.on("load", () => {
-      if (state?.coordinates) {
-        // If navigating from bookmarks, use those coordinates
-        const [lon, lat] = state.coordinates;
-        setEndPoint(state.coordinates);
-        findCarparks(lat, lon);
-      } else {
-        // Otherwise trigger geolocation to show nearby carparks
-      }
-    });
-
-    // Updated geolocate event handler
-    geolocate.on("geolocate", async (e) => {
-      const lon = e.coords.longitude;
-      const lat = e.coords.latitude;
-      setStartPoint([lon, lat]);
-
-      // If no destination is set (not navigating from bookmarks),
-      // find carparks near current location
-      if (!endPoint) {
-        console.log("Finding carparks near current location:", lat, lon);
-        await findCarparks(lat, lon);
-
-        // Add a marker for current location
-        const markerElement = document.createElement("div");
-        markerElement.className = "marker";
-        markerElement.style.backgroundColor = "#FF0000"; // Red marker for current location
-
-        new mapboxgl.Marker(markerElement)
-          .setLngLat([lon, lat])
-          .setPopup(
-            new mapboxgl.Popup().setHTML(`
-              <h3>Current Location</h3>
-            `),
-          )
-          .addTo(map.current);
-
-        // Center map on current location
-        map.current.flyTo({
-          center: [lon, lat],
-          zoom: 15,
-          essential: true,
-        });
-      }
-    });
 
     const geocoder = new MapboxGeocoder({
       accessToken: mapboxgl.accessToken,
       mapboxgl: mapboxgl,
       placeholder: "Enter destination",
+      className: "custom-geocoder",
     });
+
     map.current.addControl(geocoder);
+    map.current.addControl(geolocate);
+    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+
+    map.current.on("load", () => {
+      geolocate.trigger();
+      if (state?.coordinates) {
+        const [lon, lat] = state.coordinates;
+        map.current.flyTo({
+          center: [lon, lat],
+          zoom: 15,
+          essential: true,
+        });
+        const markerId = `carpark-marker-${state?.coordinates}`;
+        const markerElement = document.createElement("div");
+        markerElement.id = markerId;
+        markerElement.className = "marker";
+        new mapboxgl.Marker(markerElement)
+          .setLngLat([lon, lat])
+          .addTo(map.current);
+        setEndPoint(state.coordinates);
+        findCarparks(lat, lon);
+      } else {
+      }
+    });
+
+    geolocate.on("geolocate", (e) => {
+      const lon = e.coords.longitude;
+      const lat = e.coords.latitude;
+      setStartPoint([lon, lat]);
+    });
 
     geocoder.on("result", (e) => {
       const [longitude, latitude] = e.result.center;

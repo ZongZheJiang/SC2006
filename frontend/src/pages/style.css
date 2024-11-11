@@ -40,6 +40,19 @@
         sans-serif;
 }
 
+.mapboxgl-ctrl-geocoder {
+    width: 130% !important;
+    margin: 10px !important;
+    margin-right: 35px !important;
+}
+
+/* Style the input box */
+.mapboxgl-ctrl-geocoder--input {
+    height: 40px !important;
+    font-size: 18px !important;
+    padding: 6px 35px !important;
+}
+
 .marker {
     background-image: url("https://docs.mapbox.com/mapbox-gl-js/assets/custom_marker.png");
     background-size: cover;

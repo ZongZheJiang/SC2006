@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, Typography, Box, IconButton } from "@mui/material";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import TwoWheelerIcon from "@mui/icons-material/TwoWheeler";
 import PlaceIcon from "@mui/icons-material/Place";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
@@ -157,7 +158,11 @@ const CarparkCard = ({ carpark, onSelect }) => {
             carpark.lots_available != null &&
             carpark.total_lots != null && (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <DirectionsCarIcon fontSize="small" />
+                {carpark.lot_type === "M" ? (
+                  <TwoWheelerIcon fontSize="small" />
+                ) : (
+                  <DirectionsCarIcon fontSize="small" />
+                )}
                 <Typography variant="body2">
                   {carpark.lots_available}/{carpark.total_lots} lots
                 </Typography>
@@ -168,7 +173,11 @@ const CarparkCard = ({ carpark, onSelect }) => {
             carpark.lots_available != null &&
             !carpark.total_lots && (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <DirectionsCarIcon fontSize="small" />
+                {carpark.lot_type === "M" ? (
+                  <TwoWheelerIcon fontSize="small" />
+                ) : (
+                  <DirectionsCarIcon fontSize="small" />
+                )}
                 <Typography variant="body2">
                   {carpark.lots_available} lots
                 </Typography>

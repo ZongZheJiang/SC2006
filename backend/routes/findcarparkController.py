@@ -39,6 +39,7 @@ def carparkfinder():
     sort_options = requests.get(BACKEND_URL + "sort").json()
     sort_type = sort_options["sort_type"]
     show_ev = sort_options["show_ev"]
+    veh_type=sort_options["veh_type"]
 
     if show_ev == "false":
         for carpark in res:
@@ -48,6 +49,11 @@ def carparkfinder():
             sort_by_price(res)
     elif sort_type == "lots":
             sort_by_lots(res)
+
+    if veh_type == "motorcycle":
+         for carpark in res:
+            carpark["lot_type"]="M"
+            carpark["price"]= "$0.65/hr" if carpark["agency"] == "HDB" else carpark["price"]
 
     return jsonify({
             "status": "success",

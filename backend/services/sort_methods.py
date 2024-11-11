@@ -50,6 +50,7 @@ def calculate_distance(origin, destination):
 def sort_by_lots(carpark_data):
     with_lots,without_lots=[],[]
     for carpark in carpark_data:
+        print("lot_type")
         if not carpark['lot_type']:
             without_lots.append(carpark)
         else:
