@@ -149,6 +149,7 @@ function Navigation() {
       const lon = e.coords.longitude;
       const lat = e.coords.latitude;
       setStartPoint([lon, lat]);
+      findCarparks(lat, lon);
     });
 
     geocoder.on("result", (e) => {
