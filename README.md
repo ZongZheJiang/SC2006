@@ -6,15 +6,6 @@
 
 ---
 
-## Features
-- **Search Nearby Carparks**: Input a location to find carparks near your destination.
-- **Real-Time Updates**: Access live carpark availability and pricing data.
-- **Navigation**: Get directions to your chosen carpark with an interactive map.
-- **Sorting Options**: Sort carparks based on proximity or pricing.
-- **Bookmarking**: Save favorite locations for easy access in future sessions.
-
----
-
 ## Steps to Run the Application
 
 1. Clone the repository:
