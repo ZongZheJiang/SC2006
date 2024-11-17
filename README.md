@@ -4,6 +4,9 @@
 # ParkIt!
 **ParkIt!** is a locally hosted web application designed to assist drivers in Singapore by providing real-time updates on carpark availability and pricing. By leveraging APIs like LTA DataMall and HDB Carpark Availability Systems, along with Mapbox for navigation, the app streamlines the process of finding carparks near a desired location.
 
+Demo Video:
+https://youtu.be/PZhsPj9tm6c
+
 ---
 
 ## Steps to Run the Application
