@@ -87,5 +87,32 @@ The **Settings** page empowers users to tailor their experience by offering the 
 These customizations ensure that **ParkIt!** caters to diverse user preferences and scenarios, making the app highly adaptable and user-friendly. 
 
 --- 
+### Carpark Locator
 
+To search for a carpark near your destination, first input the location that you want to head to in the search bar. After that, you will be presented with the 10 nearest carparks to your desired location.
+
+<img width="400" src="https://github.com/user-attachments/assets/7a636854-5183-4a6a-8569-df7e08fa1c9f">
+<img width="400" src="https://github.com/user-attachments/assets/d13a4cce-573d-4fc4-8825-a201285bda8f">
+
+---
+
+### Navigation
+
+After Selecting a desired carpark, you will be given navigation routes to your selected carpark.
+
+<img width="400" src="https://github.com/user-attachments/assets/90c806e3-ccd8-4f20-87c9-578210ebdc18">
+
+---
+### Bookmarking Carparks
+If you want to save a carpark for future reference, you can either click the bookmark button beside the desired carpark, or you can go to the bookmarks tab, input the location that you want to save, and click 'add to bookmarks'. After that, whenever you open the app, you can simply just head to the bookmarks page of the app and click the navigate button to navigate to your desired carpark.
+
+<img width="400" src="https://github.com/user-attachments/assets/04622299-4181-4d4b-8eeb-41ac6e508c9c">
+
+---
+### Settings for customisation
+If you are not seeing the results you want to see, you may head to the settings page to tailor your experience and show the results based on either price, proximity or lot availability. you can also use this to change the app to search for motorcycle parking instead by clicking the motorcycle button. For EV drivers, theres even a show EV parking button to highlight which parking lots have EV charging capabilities.
+
+<img width="400" src="https://github.com/user-attachments/assets/6c1168c4-e370-404a-96fa-6ff098d03ccc">
+
+---
 These core features work together to provide a seamless and efficient parking experience, addressing the unique challenges faced by drivers in Singapore.
